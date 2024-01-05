@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystem.drivetrain;
+package org.firstinspires.ftc.teamcodev2.subsystem.drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
 
-public class ExposedDrive extends SampleDrive {
+public class ExposedDrive extends DrivetrainImpl {
     public ExposedDrive(HardwareMap hardwareMap) {
         super(hardwareMap);
     }

@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcodev2.opmode.teleop.config;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.subsystem.drivetrain.ExposedDrive;
-import org.firstinspires.ftc.teamcode.util.ThreadUtils;
+import org.firstinspires.ftc.teamcodev2.controller.Controller;
+import org.firstinspires.ftc.teamcodev2.subsystem.drivetrain.ExposedDrive;
+import org.firstinspires.ftc.teamcodev2.util.ThreadUtils;
 
 /**
  * TeleOp to test the motor mappings to test if the wheels are mapped properly
@@ -88,6 +88,6 @@ public class DrivetrainConfig extends OpMode {
 
     @Override
     public void stop() {
-        ThreadUtils.runThread = false;
+        ThreadUtils.stopThreads();
     }
 }

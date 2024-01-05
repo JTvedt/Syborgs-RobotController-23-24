@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util.math;
+package org.firstinspires.ftc.teamcodev2.util.math;
 
 public class MathUtils {
     public static final double TWO_PI = Math.PI * 2;
@@ -10,5 +10,9 @@ public class MathUtils {
 
     public static double round(double num, int digits) {
         return Math.round(num * Math.pow(10, digits)) / Math.pow(10, digits);
+    }
+
+    public static double normalize(double value, double lowBoundary, double highBoundary, double low, double high) {
+        return Math.max(Math.min((value - lowBoundary) / (highBoundary - lowBoundary) * (high - low) + low, high), low);
     }
 }
