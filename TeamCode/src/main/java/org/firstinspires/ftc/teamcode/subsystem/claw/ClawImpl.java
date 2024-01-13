@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystem.claw;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.ThreadUtils;
+
 
 public class ClawImpl implements Claw {
     private ClawState leftState = ClawState.OPEN;
@@ -111,5 +113,13 @@ public class ClawImpl implements Claw {
 
     public void toggleLift() {
         setLift(spinClaw.getPosition() == DOWN_POSITION ? BACK_POSITION : DOWN_POSITION);
+    }
+
+    public void placePixel() {
+        new Thread(() -> {
+            open();
+            ThreadUtils.rest(150);
+            close();
+        }).start();
     }
 }

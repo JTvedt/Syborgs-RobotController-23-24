@@ -11,4 +11,8 @@ public class MathUtils {
     public static double round(double num, int digits) {
         return Math.round(num * Math.pow(10, digits)) / Math.pow(10, digits);
     }
+
+    public static double normalize(double value, double lowIn, double highIn, double lowOut, double highOut) {
+        return (Math.max(Math.min(value, highIn), lowIn) - lowIn) / (highIn - lowIn) * (highOut - lowOut) + lowOut;
+    }
 }
