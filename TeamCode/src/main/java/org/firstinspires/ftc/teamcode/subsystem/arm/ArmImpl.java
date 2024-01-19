@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem.arm;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystem.claw.Claw;
@@ -8,18 +9,17 @@ import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 public class ArmImpl implements Arm {
-    private final DcMotor armMotor;
-    private Claw claw = null;
+    protected final DcMotor armMotor;
+    protected Claw claw = null;
 
     public static final int LOW_BACKBOARD = 100;
     public static final int HIGH_BACKBOARD = 400;
 
-    private boolean targeting = true;
-
     public ArmImpl(HardwareMap hardwareMap){
-        armMotor = hardwareMap.get(DcMotor.class, "AM");
+        armMotor = hardwareMap.get(DcMotor.class, "RA");
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
@@ -46,9 +46,8 @@ public class ArmImpl implements Arm {
     }
 
     public void manualMove(double power){
-        if(!targeting) {
-            armMotor.setPower(power);
-        }
+
+        armMotor.setPower(power);
     }
 
     public void addClaw(Claw claw) {
