@@ -9,9 +9,9 @@ public class ClawImpl implements Claw {
     private ClawState leftState = ClawState.OPEN;
     private ClawState rightState = ClawState.OPEN;
 
-    public Servo leftClaw;
-    public Servo rightClaw;
-    public Servo spinClaw;
+    protected Servo leftServo;
+    protected Servo rightServo;
+    protected Servo wristServo;
 
     public final double LEFT_CLOSE_VALUE = 0.55;
     public final double RIGHT_CLOSE_VALUE = 0.38;
@@ -24,40 +24,34 @@ public class ClawImpl implements Claw {
     public boolean open;
 
     public ClawImpl(HardwareMap hardwareMap){
-        leftClaw = hardwareMap.get(Servo.class,"LC");
-        rightClaw = hardwareMap.get(Servo.class,"RC");
-        spinClaw = hardwareMap.get(Servo.class, "SC");
+        leftServo = hardwareMap.get(Servo.class,"LC");
+        rightServo = hardwareMap.get(Servo.class,"RC");
+        wristServo = hardwareMap.get(Servo.class, "CW");
     }
 
-    @Override
     public void setLeft(double position) {
-        leftClaw.setPosition(position);
+        leftServo.setPosition(position);
     }
 
-    @Override
     public void openLeft() {
         setLeft(LEFT_OPEN_VALUE);
         leftState = ClawState.OPEN;
     }
 
-    @Override
     public void closeLeft() {
         setLeft(LEFT_CLOSE_VALUE);
         leftState = ClawState.CLOSE;
     }
 
-    @Override
     public void setRight(double position) {
-        rightClaw.setPosition(position);
+        rightServo.setPosition(position);
     }
 
-    @Override
     public void openRight() {
         setRight(RIGHT_OPEN_VALUE);
         rightState = ClawState.OPEN;
     }
 
-    @Override
     public void closeRight() {
         setRight(RIGHT_CLOSE_VALUE);
         rightState = ClawState.CLOSE;
@@ -72,7 +66,7 @@ public class ClawImpl implements Claw {
 
     public void spinDown(){
         if(!open)
-            spinClaw.setPosition(DOWN_POSITION);
+            wristServo.setPosition(DOWN_POSITION);
     }
 
     @Override
@@ -103,16 +97,15 @@ public class ClawImpl implements Claw {
 
     public void spinBack(){
         if(!open)
-            spinClaw.setPosition(BACK_POSITION);
+            wristServo.setPosition(BACK_POSITION);
     }
 
-    @Override
     public void setLift(double position) {
-        spinClaw.setPosition(position);
+        wristServo.setPosition(position);
     }
 
     public void toggleLift() {
-        setLift(spinClaw.getPosition() == DOWN_POSITION ? BACK_POSITION : DOWN_POSITION);
+        setLift(wristServo.getPosition() == DOWN_POSITION ? BACK_POSITION : DOWN_POSITION);
     }
 
     public void placePixel() {

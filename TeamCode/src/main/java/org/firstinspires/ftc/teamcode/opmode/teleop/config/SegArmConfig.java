@@ -21,9 +21,9 @@ public class SegArmConfig extends OpMode {
     public void loop() {
         int deltaArm;
         if (controller.holdingButton("RT"))
-            deltaArm = 50;
+            deltaArm = 250;
         else if (controller.holdingButton("LT"))
-            deltaArm = 50;
+            deltaArm = 10;
         else
             deltaArm = 50;
 
@@ -32,12 +32,12 @@ public class SegArmConfig extends OpMode {
         if (controller.pressingButton("X"))
             arm.changePosition(-deltaArm);
 
-        if (controller.pressingButton("B"))
-            arm.manualMove(.7);
-        else if (controller.pressingButton("A"))
-            arm.manualMove(-.7);
+        if (controller.holdingButton("B"))
+            arm.changePosition(1);
+        else if (controller.holdingButton("A"))
+            arm.changePosition(-1);
 
-        if (controller.releasingButton("B") || controller.releasingButton("A"))
-            arm.manualMove(0);
+        telemetry.addData("Position", arm.getTargetPosition());
+        telemetry.update();
     }
 }
