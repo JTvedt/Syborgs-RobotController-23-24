@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
 
 @TeleOp(name="Config Seg Arm")
 public class SegArmConfig extends OpMode {
-    SegmentedArm arm;
-    Controller controller;
+    private SegmentedArm arm;
+    private Controller controller;
 
     @Override
     public void init() {
@@ -19,25 +19,52 @@ public class SegArmConfig extends OpMode {
 
     @Override
     public void loop() {
-        int deltaArm;
+        double deltaArm;
         if (controller.holdingButton("RT"))
-            deltaArm = 250;
+            deltaArm = Math.PI/2;
         else if (controller.holdingButton("LT"))
-            deltaArm = 10;
+            deltaArm = Math.PI/18;
         else
-            deltaArm = 50;
+            deltaArm = Math.PI/6;
 
         if (controller.pressingButton("Y"))
-            arm.changePosition(deltaArm);
+            arm.changeUpperArm(deltaArm);
         if (controller.pressingButton("X"))
-            arm.changePosition(-deltaArm);
+            arm.changeUpperArm(-deltaArm);
 
         if (controller.holdingButton("B"))
-            arm.changePosition(1);
-        else if (controller.holdingButton("A"))
-            arm.changePosition(-1);
+            arm.changeUpperArm(Math.PI/180);
+        if (controller.holdingButton("A"))
+            arm.changeUpperArm(-Math.PI/180);
 
-        telemetry.addData("Position", arm.getTargetPosition());
+
+        double deltaServo;
+        if (controller.holdingButton("RT"))
+            deltaServo = Math.PI/2;
+        else if (controller.holdingButton("LT"))
+            deltaServo = Math.PI/18;
+        else
+            deltaServo = Math.PI/6;
+
+        if (controller.pressingButton("DU"))
+            arm.changeForearm(deltaServo);
+        if (controller.pressingButton("DL"))
+             arm.changeForearm(-deltaServo);
+
+        if (controller.holdingButton("DR"))
+            arm.changeForearm(Math.PI/180);
+        if (controller.holdingButton("DD"))
+            arm.changeForearm(-Math.PI/180);
+
+        if (controller.pressingButton("LB"))
+            arm.setForearm(Math.PI);
+
+        telemetry.addData("Upper Target", arm.getTargetPosition());
+        telemetry.addData("Upper Actual", arm.getCurrentPosition());
+        telemetry.addData("Upper Angle", arm.getUpperArmAngle());
+        telemetry.addData("Forearm Target", arm.servoTemp);
+        telemetry.addData("Forearm Actual", arm.getServoPosition());
+        telemetry.addData("Forearm Angle", arm.getForearmAngle());
         telemetry.update();
     }
 }

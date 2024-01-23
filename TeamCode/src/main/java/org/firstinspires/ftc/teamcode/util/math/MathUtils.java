@@ -15,4 +15,12 @@ public class MathUtils {
     public static double normalize(double value, double lowIn, double highIn, double lowOut, double highOut) {
         return (Math.max(Math.min(value, highIn), lowIn) - lowIn) / (highIn - lowIn) * (highOut - lowOut) + lowOut;
     }
+
+    public static double lawOfCosines(double a, double b, double c) {
+        // c = sqrt(a^2 + b^2 - 2ab cos C)
+        // c^2 = a^2 + b^2 - 2ab cos C
+        // 2ab cos C = a^2 + b^2 - c^2
+        // cos C = (a^2 + b^2 - c^2)/2ab
+        return Math.acos((a*a + b*b - c*c) / (2*a*b));
+    }
 }

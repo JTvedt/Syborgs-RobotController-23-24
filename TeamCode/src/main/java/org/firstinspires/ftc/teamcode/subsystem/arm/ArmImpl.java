@@ -17,18 +17,18 @@ public class ArmImpl implements Arm {
 
     public ArmImpl(HardwareMap hardwareMap){
         armMotor = hardwareMap.get(DcMotor.class, "RA");
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        setPosition(0);
     }
 
     public void setPosition(int position) {
-        double power = position < getTargetPosition() ? 1 : 0.1;
-
         armMotor.setTargetPosition(position);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(power);
+        armMotor.setPower(0.3);
     }
 
     public void updateClaw() {
@@ -39,6 +39,10 @@ public class ArmImpl implements Arm {
 
     public int getTargetPosition() {
         return armMotor.getTargetPosition();
+    }
+
+    public int getCurrentPosition() {
+        return armMotor.getCurrentPosition();
     }
 
     public void changePosition(int deltaPos) {

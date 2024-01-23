@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.ArmImpl;
+import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
 import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 public class SecondTeleOp extends OpMode {
     SampleDrive drive;
     ClawImpl claw;
-    ArmImpl arm;
+    SegmentedArm arm;
 
     Controller p1;
     Controller p2;
@@ -25,7 +26,7 @@ public class SecondTeleOp extends OpMode {
 
         drive = new SampleDrive(hardwareMap);
         claw = new ClawImpl(hardwareMap);
-        arm = new ArmImpl(hardwareMap);
+        arm = new SegmentedArm(hardwareMap);
     }
 
     @Override
@@ -40,12 +41,6 @@ public class SecondTeleOp extends OpMode {
             intakeProcess(ArmImpl.LOW_BACKBOARD);
         if (p1.pressingButton("B"))
             outtakeProcess();
-
-        // Subsystems
-        if (p1.holdingButton("Y"))
-            arm.changePosition(1);
-        if (p1.holdingButton("X"))
-            arm.changePosition(-1);
 
         // Extra
         if (p1.pressingButton("DU"))
