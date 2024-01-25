@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
+import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @TeleOp(name="Config Seg Pos")
@@ -14,8 +15,8 @@ public class SegArmPosConfig extends OpMode {
 
     @Override
     public void init() {
-        arm = new SegmentedArm(hardwareMap);
         controller = new Controller(gamepad1);
+        arm = new SegmentedArm(hardwareMap);
     }
 
     @Override
@@ -25,9 +26,14 @@ public class SegArmPosConfig extends OpMode {
 
     @Override
     public void loop() {
-        arm.changeCoordinate(-controller.getValue("LX")/2, -controller.getValue("LY")/2);
+        arm.changeCoordinate(controller.getValue("LX")/6, -controller.getValue("LY")/6);
 
         telemetry.addData("Target X", arm.getTargetX());
         telemetry.addData("Target Y", arm.getTargetY());
+    }
+
+    @Override
+    public void stop() {
+        ThreadUtils.stopThreads();
     }
 }

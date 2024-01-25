@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
+import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @TeleOp(name="Config Seg Arm")
 public class SegArmConfig extends OpMode {
@@ -13,8 +14,8 @@ public class SegArmConfig extends OpMode {
 
     @Override
     public void init() {
-        arm = new SegmentedArm(hardwareMap);
         controller = new Controller(gamepad1);
+        arm = new SegmentedArm(hardwareMap);
     }
 
     @Override
@@ -22,8 +23,6 @@ public class SegArmConfig extends OpMode {
         double deltaArm;
         if (controller.holdingButton("RT"))
             deltaArm = Math.PI/2;
-        else if (controller.holdingButton("LT"))
-            deltaArm = Math.PI/18;
         else
             deltaArm = Math.PI/6;
 
@@ -41,8 +40,6 @@ public class SegArmConfig extends OpMode {
         double deltaServo;
         if (controller.holdingButton("RT"))
             deltaServo = Math.PI/2;
-        else if (controller.holdingButton("LT"))
-            deltaServo = Math.PI/18;
         else
             deltaServo = Math.PI/6;
 
@@ -58,13 +55,26 @@ public class SegArmConfig extends OpMode {
 
         if (controller.pressingButton("LB"))
             arm.setForearm(Math.PI);
+        if (controller.pressingButton("RB"))
+            arm.initialExtension();
+
+        if (controller.holdingButton("LT"))
+            arm.tempFlag = true;
+        else
+            arm.tempFlag = false;
 
         telemetry.addData("Upper Target", arm.getTargetPosition());
         telemetry.addData("Upper Actual", arm.getCurrentPosition());
         telemetry.addData("Upper Angle", arm.getUpperArmAngle());
-        telemetry.addData("Forearm Target", arm.servoTemp);
+        telemetry.addData("Upper Power", arm.powerTemp);
+        telemetry.addData("Upper Power Actual", arm.armMotor.getPower());
         telemetry.addData("Forearm Actual", arm.getServoPosition());
         telemetry.addData("Forearm Angle", arm.getForearmAngle());
         telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        ThreadUtils.stopThreads();
     }
 }

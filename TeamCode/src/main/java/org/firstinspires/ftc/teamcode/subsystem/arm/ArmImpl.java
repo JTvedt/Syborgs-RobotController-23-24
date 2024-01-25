@@ -9,26 +9,31 @@ import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 public class ArmImpl implements Arm {
-    protected final DcMotor armMotor;
+    public final DcMotor armMotor;
     protected Claw claw = null;
 
     public static final int LOW_BACKBOARD = 100;
     public static final int HIGH_BACKBOARD = 400;
 
-    public ArmImpl(HardwareMap hardwareMap){
+    public ArmImpl(HardwareMap hardwareMap) {
+        this(hardwareMap, true);
+    }
+
+    public ArmImpl(HardwareMap hardwareMap, boolean reset) {
         armMotor = hardwareMap.get(DcMotor.class, "RA");
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (reset) {
+            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        setPosition(0);
+            setPosition(0);
+        }
     }
 
     public void setPosition(int position) {
         armMotor.setTargetPosition(position);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(0.3);
     }
 
     public void updateClaw() {

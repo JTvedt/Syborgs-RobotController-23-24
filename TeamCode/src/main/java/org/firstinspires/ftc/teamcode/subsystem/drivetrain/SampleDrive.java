@@ -32,7 +32,7 @@ public class SampleDrive implements DrivetrainMecanum {
     private BNO055IMU imu;
     private double anchorAngle = 0;
 
-    private DriveMode driveMode = DriveMode.RELATIVE;
+    private DriveMode driveMode = DriveMode.ABSOLUTE;
 
     private double horizontalMultiplier = 1;
     private double verticalMultiplier = 0.87;
@@ -52,7 +52,7 @@ public class SampleDrive implements DrivetrainMecanum {
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
