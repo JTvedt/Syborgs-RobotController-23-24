@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,10 +10,13 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
  * TeleOp for configuring the intake which consists of a servo and a motor
  * @author Tyler Philip
  * */
+
+@Deprecated
 @TeleOp(name="Config Intake")
 public class IntakeConfig extends LinearOpMode {
     public DcMotor intakeLift;
     public CRServo intakeSpin;
+
     @Override
     public void runOpMode(){
         Controller controller = new Controller(gamepad1);
@@ -28,19 +31,19 @@ public class IntakeConfig extends LinearOpMode {
         while(opModeIsActive()){
 
             //Allows the user to reverse the direction of the motors for the arm
-            if(controller.pressingButton("A")){
+            if (controller.pressingButton("A")) {
                 intakeLift.setDirection(DcMotor.Direction.REVERSE);
                 telemetry.addData("Intake Direction:", "Reverse");
             }
-            else if(controller.pressingButton("B")){
+            else if (controller.pressingButton("B")) {
                 intakeLift.setDirection(DcMotor.Direction.FORWARD);
                 telemetry.addData("Intake Direction:", "Forward");
             }
-            if(controller.pressingButton("RT")){
+            if (controller.pressingButton("RT")) {
                 intakeSpin.setDirection(CRServo.Direction.REVERSE);
                 telemetry.addData("Spin Direction:", "Reverse");
             }
-            if(controller.pressingButton("LT")){
+            if (controller.pressingButton("LT")) {
                 intakeSpin.setDirection(CRServo.Direction.FORWARD);
                 telemetry.addData("Spin Direction:", "Forward");
             }

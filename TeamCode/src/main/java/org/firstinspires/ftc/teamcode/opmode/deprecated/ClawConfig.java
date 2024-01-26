@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 * @author Tyler Philip
 * */
 
+@Deprecated
 @TeleOp(name = "Config Claw")
 public class ClawConfig extends LinearOpMode {
     public Servo leftClaw;

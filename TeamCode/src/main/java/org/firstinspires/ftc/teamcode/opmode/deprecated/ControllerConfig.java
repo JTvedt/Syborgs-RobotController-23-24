@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
+@Deprecated
 @TeleOp(name="Config Controller")
 public class ControllerConfig extends OpMode {
     private Controller controller;

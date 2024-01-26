@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
+@Deprecated
 @TeleOp(name="Config IMU")
 public class IMUConfig extends OpMode {
     private BNO055IMU imu;

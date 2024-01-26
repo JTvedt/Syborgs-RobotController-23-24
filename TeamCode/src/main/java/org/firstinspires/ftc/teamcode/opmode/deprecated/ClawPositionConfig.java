@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
+@Deprecated
 @TeleOp(name="Config Claw Position")
 public class ClawPositionConfig extends OpMode {
     private Controller controller;
