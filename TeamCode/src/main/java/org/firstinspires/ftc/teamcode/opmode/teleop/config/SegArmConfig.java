@@ -54,7 +54,7 @@ public class SegArmConfig extends OpMode {
             arm.changeForearm(-Math.PI/180);
 
         if (controller.pressingButton("LB"))
-            arm.setForearm(Math.PI);
+            arm.initialExtension();
         if (controller.pressingButton("RB"))
             arm.initialExtension();
 

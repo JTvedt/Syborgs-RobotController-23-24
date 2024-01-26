@@ -15,14 +15,14 @@ public class SegmentedArm extends ArmImpl {
     public static double FOREARM_START = Math.PI/4; // From gobilda website
     public static double WRIST_START = Math.PI/4;
     public static double EXTENDED_FOREARM = Math.PI;
-    public static double EXTENDED_UPPER_ARM = 0;
+    public static double EXTENDED_UPPER_ARM = -Math.PI/18;
     public static double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
     public static double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
     public static double COORD_FACTOR = 0.3;
     public static double PAUSE_THRESHOLD = Math.PI/4;
 
     protected Servo armServo;
-    protected Servo wristServo;
+    public Servo wristServo;
     private double upperArmAngle = UPPER_ARM_START;
     private double forearmAngle = FOREARM_START;
     private double wristAngle = WRIST_START;
@@ -156,11 +156,11 @@ public class SegmentedArm extends ArmImpl {
 
     public void setWrist(double angle) {
         wristAngle = angle;
-        wristServo.setPosition(1 + SERVO_PER_RADIAN * (wristAngle - WRIST_START));
+        setWristServo(1 + SERVO_PER_RADIAN * (wristAngle - WRIST_START));
     }
 
     public void changeWrist(double angle) {
-        setWrist(angle - wristAngle);
+        setWrist(wristAngle + angle);
     }
 
     public double getServoPosition() {
@@ -216,9 +216,11 @@ public class SegmentedArm extends ArmImpl {
         // Solve for the angles of the triangle
         double upperAngle = angle - MathUtils.lawOfCosines(UPPER_ARM_LENGTH, distance, FOREARM_LENGTH);
         double foreAngle = 2*Math.PI - MathUtils.lawOfCosines(UPPER_ARM_LENGTH, FOREARM_LENGTH, distance);
+        double wristAngle = Math.PI - (MathUtils.lawOfCosines(UPPER_ARM_LENGTH, FOREARM_LENGTH, distance) - upperAngle);
 
         setUpperArm(upperAngle);
         setForearm(foreAngle);
+        setWrist(wristAngle);
     }
 
     public void setCoordinate(double x, double y, SampleClaw claw) {
@@ -260,7 +262,7 @@ public class SegmentedArm extends ArmImpl {
             setForearm(EXTENDED_FOREARM);
             ThreadUtils.rest(700);
             setUpperArm(EXTENDED_UPPER_ARM);
-            setWrist(Math.PI/2);
+            setWrist(3 * Math.PI/2 + EXTENDED_UPPER_ARM);
         }).start();
     }
 
@@ -268,7 +270,7 @@ public class SegmentedArm extends ArmImpl {
         cancelCoordinate();
         setUpperArm(EXTENDED_UPPER_ARM);
         setForearm(EXTENDED_FOREARM);
-        setWrist(Math.PI/2);
+        setWrist(3 * Math.PI/2 + EXTENDED_UPPER_ARM);
     }
 
     public void contract() {

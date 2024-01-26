@@ -31,10 +31,11 @@ public class SegArmWristConfig extends OpMode {
 
         if (controller.pressingButton("B"))
             arm.changeWrist(deltaWrist);
-        if (controller.pressingButton("A"))
+        else if (controller.pressingButton("A"))
             arm.changeWrist(-deltaWrist);
 
         telemetry.addData("Wrist Angle", arm.getWristAngle());
+        telemetry.addData("Wrist Position", arm.wristServo.getPosition());
         telemetry.update();
     }
 
