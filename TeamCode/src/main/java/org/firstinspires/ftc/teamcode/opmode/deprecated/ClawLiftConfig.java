@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @Deprecated
-@TeleOp(name="Config Claw Lift")
 public class ClawLiftConfig extends OpMode {
     private LiftClaw claw;
     private Controller controller;

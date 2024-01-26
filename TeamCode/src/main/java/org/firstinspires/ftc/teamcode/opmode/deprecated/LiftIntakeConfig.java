@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @Deprecated
-@TeleOp(name="Config Lift Intake")
 public class LiftIntakeConfig extends OpMode {
     private int position = 0;
     private DcMotor intakeLift;

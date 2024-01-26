@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @Deprecated
-@TeleOp(name="Config Controller")
 public class ControllerConfig extends OpMode {
     private Controller controller;
 

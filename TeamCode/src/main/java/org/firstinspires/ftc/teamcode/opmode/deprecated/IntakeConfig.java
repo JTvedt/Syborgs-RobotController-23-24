@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
  * */
 
 @Deprecated
-@TeleOp(name="Config Intake")
 public class IntakeConfig extends LinearOpMode {
     public DcMotor intakeLift;
     public CRServo intakeSpin;

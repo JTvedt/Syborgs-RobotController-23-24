@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @Deprecated
-@TeleOp(name="Config IMU")
 public class IMUConfig extends OpMode {
     private BNO055IMU imu;
 

@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.subsystem.arm.ArmImpl;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @Deprecated
-@TeleOp(name="Config Arm Encoder")
 public class ArmEncoderConfig extends OpMode {
     private ArmImpl arm;
     private Controller controller;

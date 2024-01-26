@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 
 @Deprecated
-@TeleOp(name="Config Arm")
 public class ArmConfig extends LinearOpMode {
     public DcMotor armMotor;
 

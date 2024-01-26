@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 * */
 
 @Deprecated
-@TeleOp(name = "Config Claw")
 public class ClawConfig extends LinearOpMode {
     public Servo leftClaw;
     public Servo rightClaw;
