@@ -4,21 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
+import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @TeleOp(name="Config Claw Position")
 public class ClawPositionConfig extends OpMode {
     private Controller controller;
-    private ClawImpl claw;
+    private LiftClaw claw;
 
     private double leftPosition = .5;
     private double rightPosition = .5;
 
     @Override
     public void init() {
-        claw = new ClawImpl(hardwareMap);
+        claw = new LiftClaw(hardwareMap);
         controller = new Controller(gamepad1);
     }
 

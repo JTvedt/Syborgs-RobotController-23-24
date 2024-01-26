@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
-import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
+import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @TeleOp(name="TeleOp B2")
 public class B2TeleOp extends OpMode {
     SampleDrive drive;
-    ClawImpl claw;
+    LiftClaw claw;
     SegmentedArm arm;
 
     Controller p1;

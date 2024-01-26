@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.ArmImpl;
-import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
+import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
 import org.firstinspires.ftc.teamcode.subsystem.intake.Intake;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.math.Vector;
 @TeleOp(name="TeleOp Sample")
 public class SampleTeleOp extends OpMode {
     SampleDrive drive;
-    ClawImpl claw;
+    LiftClaw claw;
     ArmImpl arm;
     Intake intake;
     Controller controller;
@@ -24,7 +24,7 @@ public class SampleTeleOp extends OpMode {
     @Override
     public void init() {
         drive = new SampleDrive(hardwareMap);
-        claw = new ClawImpl(hardwareMap);
+        claw = new LiftClaw(hardwareMap);
         arm = new ArmImpl(hardwareMap);
         intake = new Intake(hardwareMap);
 

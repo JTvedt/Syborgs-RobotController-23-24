@@ -1,36 +1,31 @@
 package org.firstinspires.ftc.teamcode.subsystem.claw;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
-
-public class ClawImpl implements Claw {
+public class SampleClaw implements Claw {
     private ClawState leftState = ClawState.OPEN;
     private ClawState rightState = ClawState.OPEN;
 
-    protected Servo leftServo;
-    protected Servo rightServo;
-    protected Servo wristServo;
+    protected Servo leftClaw;
+    protected Servo rightClaw;
 
-    public final double LEFT_CLOSE_VALUE = 0.55;
-    public final double RIGHT_CLOSE_VALUE = 0.38;
-    public final double LEFT_OPEN_VALUE = 0.62;
-    public final double RIGHT_OPEN_VALUE = 0.28;
+    public static final double LEFT_CLOSE_VALUE = 0.55;
+    public static final double RIGHT_CLOSE_VALUE = 0.38;
+    public static final double LEFT_OPEN_VALUE = 0.62;
+    public static final double RIGHT_OPEN_VALUE = 0.28;
 
-    public final double BACK_POSITION = .50;
-    public final double DOWN_POSITION = .52;
+    private boolean open;
 
-    public boolean open;
-
-    public ClawImpl(HardwareMap hardwareMap){
-        leftServo = hardwareMap.get(Servo.class,"LC");
-        rightServo = hardwareMap.get(Servo.class,"RC");
-        wristServo = hardwareMap.get(Servo.class, "CW");
+    public SampleClaw(HardwareMap hardwareMap){
+        leftClaw = hardwareMap.get(Servo.class,"LC");
+        rightClaw = hardwareMap.get(Servo.class,"RC");
     }
 
     public void setLeft(double position) {
-        leftServo.setPosition(position);
+        leftClaw.setPosition(position);
     }
 
     public void openLeft() {
@@ -44,7 +39,7 @@ public class ClawImpl implements Claw {
     }
 
     public void setRight(double position) {
-        rightServo.setPosition(position);
+        rightClaw.setPosition(position);
     }
 
     public void openRight() {
@@ -62,11 +57,6 @@ public class ClawImpl implements Claw {
         openLeft();
         openRight();
         open = true;
-    }
-
-    public void spinDown(){
-        if(!open)
-            wristServo.setPosition(DOWN_POSITION);
     }
 
     @Override
@@ -93,19 +83,6 @@ public class ClawImpl implements Claw {
     public void toggle() {
         toggleLeft();
         toggleRight();
-    }
-
-    public void spinBack(){
-        if(!open)
-            wristServo.setPosition(BACK_POSITION);
-    }
-
-    public void setLift(double position) {
-        wristServo.setPosition(position);
-    }
-
-    public void toggleLift() {
-        setLift(wristServo.getPosition() == DOWN_POSITION ? BACK_POSITION : DOWN_POSITION);
     }
 
     public void placePixel() {

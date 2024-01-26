@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystem.arm;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.subsystem.claw.Claw;
-import org.firstinspires.ftc.teamcode.subsystem.claw.ClawImpl;
+import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 public class ArmImpl implements Arm {
     public final DcMotor armMotor;
-    protected Claw claw = null;
+    protected LiftClaw claw = null;
 
     public static final int LOW_BACKBOARD = 100;
     public static final int HIGH_BACKBOARD = 400;
@@ -59,7 +57,7 @@ public class ArmImpl implements Arm {
         armMotor.setPower(power);
     }
 
-    public void addClaw(Claw claw) {
+    public void addClaw(LiftClaw claw) {
         this.claw = claw;
     }
 }

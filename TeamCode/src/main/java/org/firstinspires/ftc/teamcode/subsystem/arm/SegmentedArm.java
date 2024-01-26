@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.subsystem.claw.WristClaw;
+import org.firstinspires.ftc.teamcode.subsystem.claw.SampleClaw;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
@@ -13,16 +13,19 @@ public class SegmentedArm extends ArmImpl {
     public static double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
     public static double FOREARM_START = Math.PI/4; // From gobilda website
+    public static double WRIST_START = Math.PI/4;
     public static double EXTENDED_FOREARM = Math.PI;
     public static double EXTENDED_UPPER_ARM = -Math.PI/180;
     public static double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
-    public static double SERVO_PER_RADIAN = 1 / (3 * Math.PI/2);
+    public static double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
     public static double COORD_FACTOR = 0.3;
     public static double PAUSE_THRESHOLD = Math.PI/4;
 
     protected Servo armServo;
+    protected Servo wristServo;
     private double upperArmAngle = UPPER_ARM_START;
     private double forearmAngle = FOREARM_START;
+    private double wristAngle = WRIST_START;
 
     private double targetX;
     private double targetY;
@@ -39,9 +42,11 @@ public class SegmentedArm extends ArmImpl {
         super(hardwareMap, reset);
 
         armServo = hardwareMap.get(Servo.class, "AS");
+        wristServo = hardwareMap.get(Servo.class, "WS");
 
         new Thread(this::goToTarget).start();
         setForearm(FOREARM_START);
+        setWrist(WRIST_START);
     }
 
     public void updatePower() {
@@ -124,22 +129,34 @@ public class SegmentedArm extends ArmImpl {
         setUpperArm(upperArmAngle + angle);
     }
 
-    public void setServo(double position) {
+    public void setForeServo(double position) {
         armServo.setPosition(position);
     }
 
-    public void changeServo(double position) {
-        setServo(position - armServo.getPosition());
+    public void changeForeServo(double position) {
+        setForeServo(position - armServo.getPosition());
+    }
+
+    public void setWristServo(double position) {
+        wristServo.setPosition(position);
+    }
+
+    public void changeWristServo(double position) {
+        setWristServo(position - wristServo.getPosition());
     }
 
     public void setForearm(double angle) {
-
         forearmAngle = angle;
-        setServo(1 - SERVO_PER_RADIAN * (forearmAngle - FOREARM_START));
+        setForeServo(1 + SERVO_PER_RADIAN * (forearmAngle - FOREARM_START));
     }
 
     public void changeForearm(double angle) {
         setForearm(forearmAngle + angle);
+    }
+
+    public void setWrist(double angle) {
+        wristAngle = angle;
+        wristServo.setPosition(1 + SERVO_PER_RADIAN * (wristAngle - WRIST_START));
     }
 
     public double getServoPosition() {
@@ -196,7 +213,7 @@ public class SegmentedArm extends ArmImpl {
         setForearm(foreAngle);
     }
 
-    public void setCoordinate(double x, double y, WristClaw claw) {
+    public void setCoordinate(double x, double y, SampleClaw claw) {
         setCoordinate(x, y);
     }
 
@@ -211,7 +228,7 @@ public class SegmentedArm extends ArmImpl {
         isBehind = false;
     }
 
-    public void changeCoordinate(double x, double y, WristClaw claw) {
+    public void changeCoordinate(double x, double y, SampleClaw claw) {
         if (!isBehind)
             return;
 
