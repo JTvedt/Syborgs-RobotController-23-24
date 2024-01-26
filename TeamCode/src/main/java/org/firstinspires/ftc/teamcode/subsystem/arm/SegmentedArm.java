@@ -15,7 +15,7 @@ public class SegmentedArm extends ArmImpl {
     public static double FOREARM_START = Math.PI/4; // From gobilda website
     public static double WRIST_START = Math.PI/4;
     public static double EXTENDED_FOREARM = Math.PI;
-    public static double EXTENDED_UPPER_ARM = -Math.PI/180;
+    public static double EXTENDED_UPPER_ARM = 0;
     public static double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
     public static double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
     public static double COORD_FACTOR = 0.3;
@@ -46,7 +46,7 @@ public class SegmentedArm extends ArmImpl {
 
         new Thread(this::goToTarget).start();
         setForearm(FOREARM_START);
-        setWrist(WRIST_START);
+        setWrist(5 * Math.PI/4);
     }
 
     public void updatePower() {
@@ -159,6 +159,10 @@ public class SegmentedArm extends ArmImpl {
         wristServo.setPosition(1 + SERVO_PER_RADIAN * (wristAngle - WRIST_START));
     }
 
+    public void changeWrist(double angle) {
+        setWrist(angle - wristAngle);
+    }
+
     public double getServoPosition() {
         return armServo.getPosition();
     }
@@ -169,6 +173,10 @@ public class SegmentedArm extends ArmImpl {
 
     public double getForearmAngle() {
         return forearmAngle;
+    }
+
+    public double getWristAngle() {
+        return wristAngle;
     }
 
     /**
@@ -252,6 +260,7 @@ public class SegmentedArm extends ArmImpl {
             setForearm(EXTENDED_FOREARM);
             ThreadUtils.rest(700);
             setUpperArm(EXTENDED_UPPER_ARM);
+            setWrist(Math.PI/2);
         }).start();
     }
 
@@ -259,6 +268,7 @@ public class SegmentedArm extends ArmImpl {
         cancelCoordinate();
         setUpperArm(EXTENDED_UPPER_ARM);
         setForearm(EXTENDED_FOREARM);
+        setWrist(Math.PI/2);
     }
 
     public void contract() {
