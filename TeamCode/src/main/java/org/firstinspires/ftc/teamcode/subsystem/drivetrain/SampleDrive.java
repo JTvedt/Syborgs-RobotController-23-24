@@ -142,6 +142,10 @@ public class SampleDrive implements DrivetrainMecanum {
 
     public void teleDrive(double lStickX, double lStickY, double rStickX, double power) {
         double turn = rStickX * 0.6;
+
+        if (turn == 0)
+            ; // Auto steering
+
         Vector targetVector = new Vector(lStickX, -lStickY);
         targetVector.stretch(horizontalMultiplier, verticalMultiplier);
         targetVector.multiply(power);

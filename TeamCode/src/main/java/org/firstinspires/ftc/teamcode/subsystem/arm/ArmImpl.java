@@ -60,4 +60,10 @@ public class ArmImpl implements Arm {
     public void addClaw(LiftClaw claw) {
         this.claw = claw;
     }
+
+    public void waitForArm() {
+        while (Math.abs(getCurrentPosition() - getTargetPosition()) > 10) {
+
+        }
+    }
 }

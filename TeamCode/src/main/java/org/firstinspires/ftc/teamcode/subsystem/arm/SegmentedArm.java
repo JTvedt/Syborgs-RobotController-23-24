@@ -15,7 +15,8 @@ public class SegmentedArm extends ArmImpl {
     public static double FOREARM_START = Math.PI/4; // From gobilda website
     public static double WRIST_START = Math.PI/4;
     public static double EXTENDED_FOREARM = Math.PI;
-    public static double EXTENDED_UPPER_ARM = -Math.PI/18;
+    public static double EXTENDED_UPPER_ARM = -Math.PI/24;
+    public static double EXTENDED_WRIST = 3 * Math.PI/2 + EXTENDED_UPPER_ARM - Math.PI/24;
     public static double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
     public static double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
     public static double COORD_FACTOR = 0.3;
@@ -45,8 +46,8 @@ public class SegmentedArm extends ArmImpl {
         wristServo = hardwareMap.get(Servo.class, "WS");
 
         new Thread(this::goToTarget).start();
-        setForearm(FOREARM_START);
-        setWrist(5 * Math.PI/4);
+//        setForearm(FOREARM_START);
+//        setWrist(5 * Math.PI/4);
     }
 
     public void updatePower() {
@@ -110,10 +111,12 @@ public class SegmentedArm extends ArmImpl {
             if (targetPos < currentPos)
                 coefficient *= -1;
 
-            power = Math.max(Math.min(.002 * Math.pow(Math.abs(targetPos - currentPos), 1.008), 0.3), .01);
+            power = Math.max(Math.min(.002 * Math.pow(Math.abs(targetPos - currentPos), 1.008), 0.2), .01);
 
-            if (Math.abs(targetPos - currentPos) < 15)
+            if (Math.abs(targetPos - currentPos) < 8)
                 coefficient *= .1;
+            else if (Math.abs(targetPos - currentPos) < 16)
+                coefficient *= .3;
 
             powerTemp = power * coefficient;
             armMotor.setPower(power * coefficient);
@@ -262,7 +265,7 @@ public class SegmentedArm extends ArmImpl {
             setForearm(EXTENDED_FOREARM);
             ThreadUtils.rest(700);
             setUpperArm(EXTENDED_UPPER_ARM);
-            setWrist(3 * Math.PI/2 + EXTENDED_UPPER_ARM);
+            setWrist(EXTENDED_WRIST);
         }).start();
     }
 
@@ -270,18 +273,12 @@ public class SegmentedArm extends ArmImpl {
         cancelCoordinate();
         setUpperArm(EXTENDED_UPPER_ARM);
         setForearm(EXTENDED_FOREARM);
-        setWrist(3 * Math.PI/2 + EXTENDED_UPPER_ARM);
+        setWrist(EXTENDED_WRIST);
     }
 
     public void contract() {
         cancelCoordinate();
         setUpperArm(0);
         setForearm(7 * Math.PI/4);
-    }
-
-    public void waitForArm() {
-        while (Math.abs(getCurrentPosition() - getTargetPosition()) > 5) {
-
-        }
     }
 }
