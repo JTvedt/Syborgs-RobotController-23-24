@@ -9,18 +9,18 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 public class SegmentedArm extends ArmImpl {
-    public static double UPPER_ARM_LENGTH = 28.58; // Measured on robot
-    public static double FOREARM_LENGTH = 22.22; // Measured on robot
+    public static final double UPPER_ARM_LENGTH = 28.58; // Measured on robot
+    public static final double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
-    public static double FOREARM_START = Math.PI/4; // From gobilda website
-    public static double WRIST_START = Math.PI/4;
-    public static double EXTENDED_FOREARM = Math.PI;
-    public static double EXTENDED_UPPER_ARM = -Math.PI/24;
-    public static double EXTENDED_WRIST = 3 * Math.PI/2 + EXTENDED_UPPER_ARM - Math.PI/24;
-    public static double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
-    public static double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
-    public static double COORD_FACTOR = 0.3;
-    public static double PAUSE_THRESHOLD = Math.PI/4;
+    public static final double FOREARM_START = Math.PI/4; // From gobilda website
+    public static final double WRIST_START = Math.PI/4;
+    public static final double EXTENDED_FOREARM = Math.PI;
+    public static final double EXTENDED_UPPER_ARM = -Math.PI/24;
+    public static final double EXTENDED_WRIST = 3 * Math.PI/2 + EXTENDED_UPPER_ARM - Math.PI/18;
+    public static final double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
+    public static final double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
+    public static final double COORD_FACTOR = 0.3;
+    public static final double PAUSE_THRESHOLD = Math.PI/4;
 
     protected Servo armServo;
     public Servo wristServo;
@@ -263,9 +263,10 @@ public class SegmentedArm extends ArmImpl {
         new Thread(() -> {
             setUpperArm(Math.PI/6);
             setForearm(EXTENDED_FOREARM);
-            ThreadUtils.rest(700);
-            setUpperArm(EXTENDED_UPPER_ARM);
+            ThreadUtils.rest(400);
             setWrist(EXTENDED_WRIST);
+            ThreadUtils.rest(600);
+            setUpperArm(EXTENDED_UPPER_ARM);
         }).start();
     }
 
@@ -280,5 +281,12 @@ public class SegmentedArm extends ArmImpl {
         cancelCoordinate();
         setUpperArm(0);
         setForearm(7 * Math.PI/4);
+    }
+
+    public void rest() {
+        cancelCoordinate();
+        setUpperArm(0);
+        setForearm(3*Math.PI/4);
+        setWrist(5*Math.PI/4);
     }
 }

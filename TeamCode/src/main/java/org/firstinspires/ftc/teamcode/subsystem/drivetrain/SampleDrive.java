@@ -37,6 +37,8 @@ public class SampleDrive implements DrivetrainMecanum {
     private double horizontalMultiplier = 1;
     private double verticalMultiplier = 0.87;
 
+    private boolean autosteer = true;
+
     public SampleDrive(HardwareMap hardwareMap) {
         motorFL = hardwareMap.get(DcMotor.class, "FL");
         motorFR = hardwareMap.get(DcMotor.class, "FR");
@@ -106,6 +108,14 @@ public class SampleDrive implements DrivetrainMecanum {
         return false;
     }
 
+    public boolean getAutosteer() {
+        return autosteer;
+    }
+
+    public void setAutosteer(boolean autosteer) {
+        this.autosteer = autosteer;
+    }
+
     public void polarMove(double cm, double rad) {
         cartesianMove(cm * Math.cos(rad), cm * Math.sin(rad));
     }
@@ -141,10 +151,12 @@ public class SampleDrive implements DrivetrainMecanum {
     }
 
     public void teleDrive(double lStickX, double lStickY, double rStickX, double power) {
-        double turn = rStickX * 0.6;
+        double turn = rStickX * power;
 
-        if (turn == 0)
-            ; // Auto steering
+        if (turn == 0 && autosteer) {
+            double targetAngle = Math.round(getAngle() / (Math.PI / 4)) * (Math.PI / 4);
+            turn = -distanceToAngle(targetAngle) * 0.5 / (Math.PI / 8);
+        }
 
         Vector targetVector = new Vector(lStickX, -lStickY);
         targetVector.stretch(horizontalMultiplier, verticalMultiplier);
@@ -178,6 +190,10 @@ public class SampleDrive implements DrivetrainMecanum {
 
     public void setAnchorAngle() {
         anchorAngle = getAngle();
+    }
+
+    public double distanceToAngle(double angle) {
+        return MathUtils.normalizeAngle(angle - getAngle());
     }
 
     public enum DriveMode {

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
 import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystem.claw.SampleClaw;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
+import org.firstinspires.ftc.teamcode.subsystem.extra.DroneLauncher;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 @TeleOp(name="TeleOp Second")
@@ -15,6 +16,7 @@ public class SecondTeleOp extends OpMode {
     SampleDrive drive;
     SampleClaw claw;
     SegmentedArm arm;
+    DroneLauncher launcher;
 
     Controller p1;
     Controller p2;
@@ -29,6 +31,7 @@ public class SecondTeleOp extends OpMode {
         drive = new SampleDrive(hardwareMap);
         claw = new SampleClaw(hardwareMap);
         arm = new SegmentedArm(hardwareMap);
+        launcher = new DroneLauncher(hardwareMap);
     }
 
     @Override
@@ -44,35 +47,38 @@ public class SecondTeleOp extends OpMode {
 
         // Processes
         if (p1.pressingButton("X"))
-            if (p1.holdingButton("RT"))
-                intermediateProcess(-30, 40);
+            if (p1.holdingButton("RT") && p1.holdingButton("LT"))
+                intermediateProcess(-20, 45);
+            else if (p1.holdingButton("RT"))
+                intermediateProcess(-30, 35);
             else
-                intermediateProcess(-40, 10);
+                intermediateProcess(-30, 25);
         if (p1.pressingButton("B"))
             outtakeProcess();
         if (p1.pressingButton("A"))
-            intakeProcess();
+            claw.toggle();
 
         // Fine tuning
         if (p1.pressingButton("LB"))
-            claw.toggle();
+            claw.toggleLeft();
+        if (p1.pressingButton("RB"))
+            claw.toggleRight();
 
-        if (p2.pressingButton("LB"))
-            if (color == 0)
-                color = 1;
-            else
-                color = 0;
+        if (p1.pressingButton("DU"))
+            SegmentedArm.UPPER_ARM_START -= Math.PI/72;
+        if (p1.pressingButton("DD"))
+            SegmentedArm.UPPER_ARM_START += Math.PI/72;
 
-        if (color == 0)
+        if (drive.getAngle() < 0)
             arm.changeCoordinate(p2.getValue("LX")/3, -p2.getValue("LY")/3);
         else
-            arm.changeCoordinate(p2.getValue("LX")/3, -p2.getValue("LY")/3);
+            arm.changeCoordinate(-p2.getValue("LX")/3, -p2.getValue("LY")/3);
 
         // Extra
         if (p1.pressingButton("DU"))
             ;// Linear Actuator here
         if (p1.pressingButton("DD"))
-            ;// Drone Launcher here
+            launcher.launch();
 
         telemetry.addData("RT", String.valueOf(p1.holdingButton("RT")));
         telemetry.addData("Arm Current", arm.getCurrentPosition());
@@ -83,10 +89,6 @@ public class SecondTeleOp extends OpMode {
     @Override
     public void stop() {
         ThreadUtils.stopThreads();
-    }
-
-    private void intakeProcess() {
-        claw.close();
     }
 
     private void intermediateProcess(double x, double y) {
