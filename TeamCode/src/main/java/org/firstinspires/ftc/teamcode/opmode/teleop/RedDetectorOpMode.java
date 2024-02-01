@@ -97,7 +97,7 @@ public class RedDetectorOpMode extends LinearOpMode {
 
                 // Display the width next to the label
                 String widthLabel = "Width: " + (int) width + " pixels";
-                Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
+                Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 255), 2);
                 //Display the Distance
                 String distanceLabel = "Distance: " + String.format("%.2f", getDistance(width)) + " inches";
 
@@ -135,8 +135,8 @@ public class RedDetectorOpMode extends LinearOpMode {
             Mat hsvFrame = new Mat();
             Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-            Scalar lowerRed = new Scalar(100, 100, 100);
-            Scalar upperRed = new Scalar(180, 255, 255);
+            Scalar lowerRed = new Scalar(100, 50, 50);
+            Scalar upperRed = new Scalar(120, 255, 255);
 
 
             Mat redMask = new Mat();

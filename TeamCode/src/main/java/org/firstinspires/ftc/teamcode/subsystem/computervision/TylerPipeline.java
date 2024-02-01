@@ -88,11 +88,20 @@ public class TylerPipeline extends OpenCvPipeline {
         Mat hsvFrame = new Mat();
         Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-        Scalar lowerRed = new Scalar(100, 100, 100);
-        Scalar upperRed = new Scalar(180, 255, 255);
+        Scalar lowerColor;
+        Scalar upperColor;
+        if(color == 1){
+            lowerColor = new Scalar(100, 100, 100);
+            upperColor = new Scalar(180, 255, 255);
+        }
+        else{
+            lowerColor = new Scalar(100, 100, 100);
+            upperColor = new Scalar(180, 255, 255);
+        }
+
 
         Mat redMask = new Mat();
-        Core.inRange(hsvFrame, lowerRed, upperRed, redMask);
+        Core.inRange(hsvFrame, lowerColor, upperColor, redMask);
 
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         Imgproc.morphologyEx(redMask, redMask, Imgproc.MORPH_OPEN, kernel);
