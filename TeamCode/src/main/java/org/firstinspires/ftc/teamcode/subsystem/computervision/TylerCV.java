@@ -38,4 +38,8 @@ public class TylerCV {
     public String getPosition() {
         return pipeline.getPosition();
     }
+
+    public void stop() {
+        camera.stopStreaming();
+    }
 }

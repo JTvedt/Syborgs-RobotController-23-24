@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.util.math.Vector;
 
 public class SampleDrive implements DrivetrainMecanum {
     public static final double PULSES_PER_REVOLUTION = 537.7;
-    public static final double WHEEL_CIRCUMFERENCE = 6.201;
-    public static final double TICKS_PER_CM = PULSES_PER_REVOLUTION / WHEEL_CIRCUMFERENCE;
+    public static final double WHEEL_CIRCUMFERENCE = 11;
+    public static final double TICKS_PER_CM = 18;
     public static final double TICKS_PER_RAD = 425;
 
     public static final double HIGH_SPEED = 1;
@@ -143,6 +143,28 @@ public class SampleDrive implements DrivetrainMecanum {
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(SLOW_SPEED);
+    }
+
+    public void spinTo(double rad) {
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        int counter = 0;
+
+        while (counter < 20) {
+            double turn = Math.max(Math.min(-distanceToAngle(rad) * 0.5 / (Math.PI / 4), 0.5), -0.5);
+
+            motorFL.setPower(turn);
+            motorFR.setPower(-turn);
+            motorBL.setPower(turn);
+            motorBR.setPower(-turn);
+
+            if (Math.abs(getAngle() - rad) < Math.PI/360)
+                counter++;
+            else
+                counter = 0;
+        }
+
+        setPower(0);
+        ThreadUtils.rest();
     }
 
     public void setMultiplier(double horizontalMultiplier, double verticalMultiplier) {

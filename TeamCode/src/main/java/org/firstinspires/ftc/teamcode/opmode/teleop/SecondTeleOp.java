@@ -36,7 +36,7 @@ public class SecondTeleOp extends OpMode {
 
     @Override
     public void start() {
-        arm.initialExtension();
+        arm.extend();
         claw.open();
     }
 
@@ -64,10 +64,15 @@ public class SecondTeleOp extends OpMode {
         if (p1.pressingButton("RB"))
             claw.toggleRight();
 
-        if (p1.pressingButton("DU"))
-            SegmentedArm.UPPER_ARM_START -= Math.PI/72;
-        if (p1.pressingButton("DD"))
+        if (p2.pressingButton("DU")) {
+            SegmentedArm.UPPER_ARM_START -= Math.PI / 72;
+            arm.extend();
+        }
+
+        if (p2.pressingButton("DD")) {
             SegmentedArm.UPPER_ARM_START += Math.PI/72;
+            arm.extend();
+        }
 
         if (drive.getAngle() < 0)
             arm.changeCoordinate(p2.getValue("LX")/3, -p2.getValue("LY")/3);

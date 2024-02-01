@@ -12,7 +12,7 @@ public class SegmentedArm extends ArmImpl {
     public static final double UPPER_ARM_LENGTH = 28.58; // Measured on robot
     public static final double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
-    public static final double FOREARM_START = Math.PI/4; // From gobilda website
+    public static final double FOREARM_START = Math.PI/4 - Math.PI/24;
     public static final double WRIST_START = Math.PI/4;
     public static final double EXTENDED_FOREARM = Math.PI;
     public static final double EXTENDED_UPPER_ARM = -Math.PI/24;
@@ -261,9 +261,9 @@ public class SegmentedArm extends ArmImpl {
      */
     public void initialExtension() {
         new Thread(() -> {
-            setUpperArm(Math.PI/6);
+            setUpperArm(Math.PI/4);
             setForearm(EXTENDED_FOREARM);
-            ThreadUtils.rest(400);
+            ThreadUtils.rest(700);
             setWrist(EXTENDED_WRIST);
             ThreadUtils.rest(600);
             setUpperArm(EXTENDED_UPPER_ARM);
@@ -285,8 +285,11 @@ public class SegmentedArm extends ArmImpl {
 
     public void rest() {
         cancelCoordinate();
-        setUpperArm(0);
-        setForearm(3*Math.PI/4);
+        setUpperArm(Math.PI/3);
+        setForearm(5*Math.PI/6);
         setWrist(5*Math.PI/4);
+        waitForArm();
+        ThreadUtils.rest(500);
+        setUpperArm(0);
     }
 }
