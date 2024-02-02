@@ -13,17 +13,15 @@ public class SampleClaw implements Claw {
     protected Servo rightClaw;
 
     public static final double LEFT_CLOSE_VALUE = 0.35;
+    public static final double LEFT_OPEN_VALUE = 0.47;
     public static final double RIGHT_CLOSE_VALUE = 0.7;
-    public static final double LEFT_OPEN_VALUE = 0.43;
-    public static final double RIGHT_OPEN_VALUE = 0.62;
+    public static final double RIGHT_OPEN_VALUE = 0.58;
 
     private boolean open;
 
     public SampleClaw(HardwareMap hardwareMap){
         leftClaw = hardwareMap.get(Servo.class,"LC");
         rightClaw = hardwareMap.get(Servo.class,"RC");
-
-        close();
     }
 
     public void setLeft(double position) {

@@ -12,11 +12,11 @@ public class SegmentedArm extends ArmImpl {
     public static final double UPPER_ARM_LENGTH = 28.58; // Measured on robot
     public static final double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
-    public static final double FOREARM_START = Math.PI/4 - Math.PI/24;
+    public static final double FOREARM_START = Math.PI/4;
     public static final double WRIST_START = Math.PI/4;
     public static final double EXTENDED_FOREARM = Math.PI;
     public static final double EXTENDED_UPPER_ARM = -Math.PI/24;
-    public static final double EXTENDED_WRIST = 3 * Math.PI/2 + EXTENDED_UPPER_ARM - Math.PI/18;
+    public static final double EXTENDED_WRIST = 3 * Math.PI/2 + EXTENDED_UPPER_ARM + Math.PI/12;
     public static final double TICKS_PER_RADIAN = 2072 / (2 * Math.PI); // From the GoBilda Website
     public static final double SERVO_PER_RADIAN = -1 / (3 * Math.PI/2);
     public static final double COORD_FACTOR = 0.3;
@@ -115,8 +115,6 @@ public class SegmentedArm extends ArmImpl {
 
             if (Math.abs(targetPos - currentPos) < 8)
                 coefficient *= .1;
-            else if (Math.abs(targetPos - currentPos) < 16)
-                coefficient *= .3;
 
             powerTemp = power * coefficient;
             armMotor.setPower(power * coefficient);
@@ -150,7 +148,7 @@ public class SegmentedArm extends ArmImpl {
 
     public void setForearm(double angle) {
         forearmAngle = angle;
-        setForeServo(1 + SERVO_PER_RADIAN * (forearmAngle - FOREARM_START));
+        setForeServo(-SERVO_PER_RADIAN * (forearmAngle - FOREARM_START));
     }
 
     public void changeForearm(double angle) {
@@ -261,11 +259,11 @@ public class SegmentedArm extends ArmImpl {
      */
     public void initialExtension() {
         new Thread(() -> {
-            setUpperArm(Math.PI/4);
+            setUpperArm(2*Math.PI/3);
             setForearm(EXTENDED_FOREARM);
-            ThreadUtils.rest(700);
+            waitForArm();
+            ThreadUtils.rest(400);
             setWrist(EXTENDED_WRIST);
-            ThreadUtils.rest(600);
             setUpperArm(EXTENDED_UPPER_ARM);
         }).start();
     }

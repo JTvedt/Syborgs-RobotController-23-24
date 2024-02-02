@@ -43,7 +43,7 @@ public class SecondTeleOp extends OpMode {
     @Override
     public void loop() {
         // Drivetrain
-        drive.teleDrive(gamepad1, p1.holdingButton("RT") ? 0.2 : 0.7);
+        drive.teleDrive(gamepad1, p1.holdingButton("RT") ? 0.2 : 0.85);
 
         // Processes
         if (p1.pressingButton("X"))
@@ -65,19 +65,22 @@ public class SecondTeleOp extends OpMode {
             claw.toggleRight();
 
         if (p2.pressingButton("DU")) {
-            SegmentedArm.UPPER_ARM_START -= Math.PI / 72;
+            SegmentedArm.UPPER_ARM_START -= Math.PI / 180;
             arm.extend();
         }
 
         if (p2.pressingButton("DD")) {
-            SegmentedArm.UPPER_ARM_START += Math.PI/72;
+            SegmentedArm.UPPER_ARM_START += Math.PI/180;
             arm.extend();
         }
 
         if (drive.getAngle() < 0)
-            arm.changeCoordinate(p2.getValue("LX")/3, -p2.getValue("LY")/3);
+            arm.changeCoordinate(2*p2.getValue("LX")/3, -2*p2.getValue("LY")/3);
         else
-            arm.changeCoordinate(-p2.getValue("LX")/3, -p2.getValue("LY")/3);
+            arm.changeCoordinate(-2*p2.getValue("LX")/3, -2*p2.getValue("LY")/3);
+
+        if (p1.pressingButton("Y"))
+            drive.setAnchorAngle();
 
         // Extra
         if (p1.pressingButton("DU"))

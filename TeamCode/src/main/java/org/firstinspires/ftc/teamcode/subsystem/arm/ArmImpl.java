@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
+import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 public class ArmImpl implements Arm {
@@ -62,7 +63,7 @@ public class ArmImpl implements Arm {
     }
 
     public void waitForArm() {
-        while (Math.abs(getCurrentPosition() - getTargetPosition()) > 10) {
+        while (Math.abs(getCurrentPosition() - getTargetPosition()) > 10 && ThreadUtils.isRunThread()) {
 
         }
     }

@@ -65,7 +65,7 @@ public class TylerPipeline extends OpenCvPipeline {
             else if((int) cX < (213)){
                 position = "Left";
             }
-            else if((int) cX > 213 && (int) cX < 426){
+            else{
                 position = "Middle";
             }
 

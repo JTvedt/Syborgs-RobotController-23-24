@@ -37,7 +37,7 @@ public class SampleDrive implements DrivetrainMecanum {
     private double horizontalMultiplier = 1;
     private double verticalMultiplier = 0.87;
 
-    private boolean autosteer = true;
+    private boolean autosteer = false;
 
     public SampleDrive(HardwareMap hardwareMap) {
         motorFL = hardwareMap.get(DcMotor.class, "FL");
@@ -95,8 +95,8 @@ public class SampleDrive implements DrivetrainMecanum {
         motorBR.setTargetPosition(xTicks + yTicks);
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (isMoving()) {
-            setPower(SLOW_SPEED);
+        while (ThreadUtils.isRunThread() && isMoving()) {
+            setPower(MEDIUM_SPEED);
         }
 
         ThreadUtils.rest();
@@ -142,14 +142,14 @@ public class SampleDrive implements DrivetrainMecanum {
         motorBR.setTargetPosition(tickCount);
 
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setPower(SLOW_SPEED);
+        setPower(MEDIUM_SPEED);
     }
 
     public void spinTo(double rad) {
         setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int counter = 0;
 
-        while (counter < 20) {
+        while (counter < 20 && ThreadUtils.isRunThread()) {
             double turn = Math.max(Math.min(-distanceToAngle(rad) * 0.5 / (Math.PI / 4), 0.5), -0.5);
 
             motorFL.setPower(turn);
@@ -211,7 +211,7 @@ public class SampleDrive implements DrivetrainMecanum {
     }
 
     public void setAnchorAngle() {
-        anchorAngle = getAngle();
+        anchorAngle = getAngle() + anchorAngle;
     }
 
     public double distanceToAngle(double angle) {
