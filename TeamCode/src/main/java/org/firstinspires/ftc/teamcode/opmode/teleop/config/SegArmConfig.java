@@ -68,7 +68,8 @@ public class SegArmConfig extends OpMode {
         telemetry.addData("Upper Angle", arm.getUpperArmAngle());
         telemetry.addData("Upper Power", arm.powerTemp);
         telemetry.addData("Upper Power Actual", arm.armMotor.getPower());
-        telemetry.addData("Forearm Actual", arm.getServoPosition());
+        telemetry.addData("Forearm Target", arm.getForeTarget());
+        telemetry.addData("Forearm Actual", arm.getForeCurrent());
         telemetry.addData("Forearm Angle", arm.getForearmAngle());
         telemetry.update();
     }

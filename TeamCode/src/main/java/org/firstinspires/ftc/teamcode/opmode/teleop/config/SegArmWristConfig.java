@@ -35,7 +35,6 @@ public class SegArmWristConfig extends OpMode {
             arm.changeWrist(-deltaWrist);
 
         telemetry.addData("Wrist Angle", arm.getWristAngle());
-        telemetry.addData("Wrist Position", arm.wristServo.getPosition());
         telemetry.update();
     }
 

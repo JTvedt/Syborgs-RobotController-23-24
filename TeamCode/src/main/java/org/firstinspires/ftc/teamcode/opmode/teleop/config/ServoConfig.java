@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 @TeleOp(name="Config Servo")
 public class ServoConfig extends OpMode {
     private Controller controller;
-    private Servo forearm;
     private Servo wrist;
     private Servo left;
     private Servo right;
@@ -19,7 +18,6 @@ public class ServoConfig extends OpMode {
     public void init() {
         controller = new Controller(gamepad1);
 
-        forearm = hardwareMap.get(Servo.class, "AS");
         wrist = hardwareMap.get(Servo.class, "WS");
         left = hardwareMap.get(Servo.class, "LC");
         right = hardwareMap.get(Servo.class, "RC");
@@ -27,8 +25,6 @@ public class ServoConfig extends OpMode {
 
     @Override
     public void loop() {
-        if (controller.pressingButton("A"))
-            forearm.setPosition(0.5);
         if (controller.pressingButton("B"))
             wrist.setPosition(0.5);
         if (controller.pressingButton("X"))

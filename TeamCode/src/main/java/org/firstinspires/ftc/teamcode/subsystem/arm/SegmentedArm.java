@@ -12,7 +12,7 @@ public class SegmentedArm extends ArmImpl {
     public static final double UPPER_ARM_LENGTH = 28.58; // Measured on robot
     public static final double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
-    public static final double FOREARM_START = Math.PI/4;
+    public static final double FOREARM_START = Math.PI/6;
     public static final double WRIST_START = Math.PI/4;
     public static final double EXTENDED_FOREARM = Math.PI;
     public static final double EXTENDED_UPPER_ARM = -Math.PI/24;
@@ -22,8 +22,8 @@ public class SegmentedArm extends ArmImpl {
     public static final double COORD_FACTOR = 0.3;
     public static final double PAUSE_THRESHOLD = Math.PI/4;
 
-    protected Servo armServo;
-    public Servo wristServo;
+    private final DcMotor forearmMotor;
+    private final Servo wristServo;
     private double upperArmAngle = UPPER_ARM_START;
     private double forearmAngle = FOREARM_START;
     private double wristAngle = WRIST_START;
@@ -32,6 +32,7 @@ public class SegmentedArm extends ArmImpl {
     private double targetY;
     private boolean isBehind = false;
     private int targetPos = 0;
+    private int foreTarget = 0;
     public double powerTemp;
     public boolean tempFlag = false;
 
@@ -42,45 +43,17 @@ public class SegmentedArm extends ArmImpl {
     public SegmentedArm(HardwareMap hardwareMap, boolean reset) {
         super(hardwareMap, reset);
 
-        armServo = hardwareMap.get(Servo.class, "AS");
+        forearmMotor = hardwareMap.get(DcMotor.class, "FA");
+        forearmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        forearmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        forearmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         wristServo = hardwareMap.get(Servo.class, "WS");
 
-        new Thread(this::goToTarget).start();
+        new Thread(this::moveArmToTarget).start();
+        new Thread(this::moveForearmToTarget).start();
 //        setForearm(FOREARM_START);
 //        setWrist(5 * Math.PI/4);
-    }
-
-    public void updatePower() {
-        double currentAngle;
-        double targetAngle;
-        double power;
-        double coefficient;
-        int currentPos;
-        int targetPos;
-
-        while (ThreadUtils.isRunThread()) {
-            currentPos = getCurrentPosition();
-            targetPos = getTargetPosition();
-            currentAngle = currentPos / TICKS_PER_RADIAN;
-            targetAngle = targetPos / TICKS_PER_RADIAN;
-
-            if (currentAngle < targetAngle)
-                power = MathUtils.normalize(currentAngle, 0, Math.PI, .3, .01);
-            else
-                power = MathUtils.normalize(currentAngle, Math.PI, 0, .3, .01);
-
-            coefficient = MathUtils.normalize(Math.abs(targetPos - currentPos), Math.PI/24, Math.PI/2, 0.01, 1);
-
-
-            if (Math.abs(targetAngle - Math.PI/2) < 3*Math.PI/7)
-                if ((currentPos > targetPos && currentPos - targetPos < 5)
-                        || (currentPos < targetPos && targetPos  - currentPos < 5)
-                        || currentPos == targetPos)
-                    coefficient = 0.01;
-
-            powerTemp = power * coefficient;
-            armMotor.setPower(power * coefficient);
-        }
     }
 
     public void setUpperArm(double angle) {
@@ -97,14 +70,13 @@ public class SegmentedArm extends ArmImpl {
         targetPos = ticks;
     }
 
-    public void goToTarget() {
+    public void moveArmToTarget() {
         int currentPos = getCurrentPosition();
         double coefficient;
         double power;
         double deltaPos;
 
         while (ThreadUtils.isRunThread()) {
-            deltaPos = currentPos - getCurrentPosition();
             currentPos = getCurrentPosition();
             coefficient = 1;
 
@@ -121,6 +93,29 @@ public class SegmentedArm extends ArmImpl {
         }
     }
 
+    public void moveForearmToTarget() {
+        int currentPos = getCurrentPosition();
+        double coefficient;
+        double power;
+        double deltaPos;
+
+        while (ThreadUtils.isRunThread()) {
+            currentPos = getForeCurrent();
+            coefficient = 1;
+
+            if (foreTarget < currentPos)
+                coefficient *= -1;
+
+            power = Math.max(Math.min(.002 * Math.pow(Math.abs(foreTarget - currentPos), 1.008), 0.2), .01);
+
+            if (Math.abs(foreTarget - currentPos) < 8)
+                coefficient *= .1;
+
+            powerTemp = power * coefficient;
+            forearmMotor.setPower(power * coefficient);
+        }
+    }
+
     @Override
     public int getTargetPosition() {
         return targetPos;
@@ -130,12 +125,20 @@ public class SegmentedArm extends ArmImpl {
         setUpperArm(upperArmAngle + angle);
     }
 
-    public void setForeServo(double position) {
-        armServo.setPosition(position);
+    public void setForeMotor(int position) {
+        foreTarget = position;
     }
 
-    public void changeForeServo(double position) {
-        setForeServo(position - armServo.getPosition());
+    public void changeForeMotor(int position) {
+        setForeMotor(position - getForeTarget());
+    }
+
+    public int getForeTarget() {
+        return foreTarget;
+    }
+
+    public int getForeCurrent() {
+        return forearmMotor.getCurrentPosition();
     }
 
     public void setWristServo(double position) {
@@ -148,7 +151,7 @@ public class SegmentedArm extends ArmImpl {
 
     public void setForearm(double angle) {
         forearmAngle = angle;
-        setForeServo(-SERVO_PER_RADIAN * (forearmAngle - FOREARM_START));
+        setForeMotor((int)(537.7 / (2*Math.PI) * (angle - FOREARM_START)));
     }
 
     public void changeForearm(double angle) {
@@ -162,10 +165,6 @@ public class SegmentedArm extends ArmImpl {
 
     public void changeWrist(double angle) {
         setWrist(wristAngle + angle);
-    }
-
-    public double getServoPosition() {
-        return armServo.getPosition();
     }
 
     public double getUpperArmAngle() {
