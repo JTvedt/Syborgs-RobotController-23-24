@@ -13,7 +13,7 @@ public class SegmentedArm extends ArmImpl {
     public static final double UPPER_ARM_LENGTH = 28.58; // Measured on robot
     public static final double FOREARM_LENGTH = 22.22; // Measured on robot
     public static double UPPER_ARM_START = 0;
-    public static final double FOREARM_START = Math.PI/6;
+    public static double FOREARM_START = Math.PI/8;
     public static final double WRIST_START = Math.PI/4;
     public static final double EXTENDED_FOREARM = Math.PI;
     public static final double EXTENDED_UPPER_ARM = -Math.PI/24;
@@ -54,8 +54,6 @@ public class SegmentedArm extends ArmImpl {
 
         new Thread(this::moveArmToTarget).start();
         new Thread(this::moveForearmToTarget).start();
-//        setForearm(FOREARM_START);
-//        setWrist(5 * Math.PI/4);
     }
 
     public void setUpperArm(double angle) {

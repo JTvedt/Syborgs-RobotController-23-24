@@ -32,6 +32,7 @@ public class SecondTeleOp extends OpMode {
         claw = new SampleClaw(hardwareMap);
         arm = new SegmentedArm(hardwareMap);
         launcher = new DroneLauncher(hardwareMap);
+        SegmentedArm.FOREARM_START = 3*Math.PI/4;
     }
 
     @Override
