@@ -78,13 +78,10 @@ public class RedDetectorOpMode extends LinearOpMode {
     class redObjectDetection extends OpenCvPipeline {
         @Override
         public Mat processFrame(Mat input) {
-            // Preprocess the frame to detect red regions
-            Mat redMask = preprocessFrame(input);
 
             // Find contours of the detected red regions
             List<MatOfPoint> contours = new ArrayList<>();
-            Mat hierarchy = new Mat();
-            Imgproc.findContours(redMask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.findContours(preprocessFrame(input), contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
             // Find the largest red contour (blob)
             MatOfPoint largestContour = findLargestContour(contours);
@@ -128,10 +125,6 @@ public class RedDetectorOpMode extends LinearOpMode {
 
             }
 
-//            Mat temp = new Mat();
-//            Imgproc.cvtColor(input, temp, Imgproc.COLOR_RGB2HSV);
-//            temp.setTo(new Scalar(120, 255, 255));
-//            Imgproc.cvtColor(temp, input, Imgproc.COLOR_HSV2RGB);
             return input;
         }
 
@@ -139,8 +132,12 @@ public class RedDetectorOpMode extends LinearOpMode {
             Mat hsvFrame = new Mat();
             Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
 
+            //Blue
             Scalar lowerRed = new Scalar(80, 100, 50);
             Scalar upperRed = new Scalar(160, 255, 255);
+
+//            Scalar lowerRed = new Scalar(100, 100, 10);
+//            Scalar upperRed = new Scalar(180, 255, 255);
 
 
             Mat redMask = new Mat();

@@ -26,6 +26,9 @@ public class TylerPipeline extends OpenCvPipeline {
     final int BLUE = 1;
     final int RED = 2;
 
+    private boolean flag = false;
+    private double width;
+
     public static final double OBJECT_WIDTH_IN_REAL_WORLD_UNITS = 2;  // Replace with the actual width of the object in real-world units
     public static final double FOCAL_LENGTH = 728;  // Replace with the focal length of the camera in pixels
 
@@ -36,13 +39,10 @@ public class TylerPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        // Preprocess the frame to detect red regions
-        Mat redMask = preprocessFrame(input);
 
         // Find contours of the detected red regions
         List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(redMask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(preprocessFrame(input), contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
         // Find the largest red contour (blob)
         MatOfPoint largestContour = findLargestContour(contours);
@@ -51,11 +51,11 @@ public class TylerPipeline extends OpenCvPipeline {
             // Draw a red outline around the largest detected object
             Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(255, 0, 0), 2);
             // Calculate the width of the bounding box
-            double width = calculateWidth(largestContour);
+            width = calculateWidth(largestContour);
 
             // Display the width next to the label
             String widthLabel = "Width: " + (int) width + " pixels";
-            Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
+            Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 255), 2);
             //Display the Distance
             String distanceLabel = "Distance: " + String.format("%.2f", getDistance(width)) + " inches";
 
@@ -93,14 +93,8 @@ public class TylerPipeline extends OpenCvPipeline {
 
         Scalar lowerColor;
         Scalar upperColor;
-        if(color == BLUE){
-            lowerColor = new Scalar(80, 100, 50);
-            upperColor = new Scalar(160, 255, 255);
-        }
-        else{ //Red color
-            lowerColor = new Scalar(100, 100, 100);
-            upperColor = new Scalar(180, 255, 255);
-        }
+        lowerColor = new Scalar(80, 100, 50);
+        upperColor = new Scalar(160, 255, 255);
 
 
         Mat redMask = new Mat();
