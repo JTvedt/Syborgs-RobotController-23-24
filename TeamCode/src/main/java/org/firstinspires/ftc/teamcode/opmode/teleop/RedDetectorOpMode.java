@@ -128,15 +128,19 @@ public class RedDetectorOpMode extends LinearOpMode {
 
             }
 
+//            Mat temp = new Mat();
+//            Imgproc.cvtColor(input, temp, Imgproc.COLOR_RGB2HSV);
+//            temp.setTo(new Scalar(120, 255, 255));
+//            Imgproc.cvtColor(temp, input, Imgproc.COLOR_HSV2RGB);
             return input;
         }
 
         private Mat preprocessFrame(Mat frame) {
             Mat hsvFrame = new Mat();
-            Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
+            Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
 
-            Scalar lowerRed = new Scalar(100, 50, 50);
-            Scalar upperRed = new Scalar(120, 255, 255);
+            Scalar lowerRed = new Scalar(80, 100, 50);
+            Scalar upperRed = new Scalar(160, 255, 255);
 
 
             Mat redMask = new Mat();

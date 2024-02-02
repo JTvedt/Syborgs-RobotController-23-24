@@ -23,6 +23,9 @@ public class TylerPipeline extends OpenCvPipeline {
     private double cX;
     private double cY;
 
+    final int BLUE = 1;
+    final int RED = 2;
+
     public static final double OBJECT_WIDTH_IN_REAL_WORLD_UNITS = 2;  // Replace with the actual width of the object in real-world units
     public static final double FOCAL_LENGTH = 728;  // Replace with the focal length of the camera in pixels
 
@@ -90,11 +93,11 @@ public class TylerPipeline extends OpenCvPipeline {
 
         Scalar lowerColor;
         Scalar upperColor;
-        if(color == 1){
-            lowerColor = new Scalar(100, 100, 100);
-            upperColor = new Scalar(180, 255, 255);
+        if(color == BLUE){
+            lowerColor = new Scalar(80, 100, 50);
+            upperColor = new Scalar(160, 255, 255);
         }
-        else{
+        else{ //Red color
             lowerColor = new Scalar(100, 100, 100);
             upperColor = new Scalar(180, 255, 255);
         }
