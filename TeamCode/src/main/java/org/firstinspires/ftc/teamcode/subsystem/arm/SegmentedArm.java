@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem.arm;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -45,6 +46,7 @@ public class SegmentedArm extends ArmImpl {
 
         forearmMotor = hardwareMap.get(DcMotor.class, "FA");
         forearmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        forearmMotor.setDirection(DcMotor.Direction.REVERSE);
         forearmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         forearmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -151,7 +153,7 @@ public class SegmentedArm extends ArmImpl {
 
     public void setForearm(double angle) {
         forearmAngle = angle;
-        setForeMotor((int)(537.7 / (2*Math.PI) * (angle - FOREARM_START)));
+        setForeMotor((int)(1425.1 / (2*Math.PI) * (angle - FOREARM_START)));
     }
 
     public void changeForearm(double angle) {
