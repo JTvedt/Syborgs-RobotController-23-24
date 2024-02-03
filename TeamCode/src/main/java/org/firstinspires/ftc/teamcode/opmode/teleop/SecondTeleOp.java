@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
-import org.firstinspires.ftc.teamcode.subsystem.claw.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystem.claw.SampleClaw;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
 import org.firstinspires.ftc.teamcode.subsystem.extra.DroneLauncher;
@@ -21,7 +20,7 @@ public class SecondTeleOp extends OpMode {
     Controller p1;
     Controller p2;
 
-    int color = 0;
+    boolean toggle = false;
 
     @Override
     public void init() {
@@ -32,13 +31,15 @@ public class SecondTeleOp extends OpMode {
         claw = new SampleClaw(hardwareMap);
         arm = new SegmentedArm(hardwareMap);
         launcher = new DroneLauncher(hardwareMap);
-        SegmentedArm.FOREARM_START = 3*Math.PI/4;
+        SegmentedArm.FOREARM_START = 5*Math.PI/6;
     }
 
     @Override
     public void start() {
-        arm.extend();
         claw.open();
+        arm.setForearm(Math.PI);
+        arm.setUpperArm(0);
+        arm.setWrist(3*Math.PI/2);
     }
 
     @Override
@@ -51,11 +52,13 @@ public class SecondTeleOp extends OpMode {
             if (p1.holdingButton("RT") && p1.holdingButton("LT"))
                 intermediateProcess(-20, 45);
             else if (p1.holdingButton("RT"))
-                intermediateProcess(-30, 35);
+                intermediateProcess(-30, 30);
             else
-                intermediateProcess(-30, 25);
+                intermediateProcess(-30, 15);
         if (p1.pressingButton("B") || p2.pressingButton("B"))
             outtakeProcess();
+        if (p1.pressingButton("Y"))
+            intakeProcess();
         if (p1.pressingButton("A") || p2.pressingButton("A"))
             claw.toggle();
 
@@ -65,24 +68,28 @@ public class SecondTeleOp extends OpMode {
         if (p1.pressingButton("RB") || p2.pressingButton("RB"))
             claw.toggleRight();
 
-        if (p2.pressingButton("RT")) {
+        double val = Math.PI/72;
+        if (p2.holdingButton("LT"))
+            val = Math.PI/4;
+
+        if (p2.holdingButton("RT")) {
             if (p2.pressingButton("DU")) {
-                SegmentedArm.FOREARM_START -= Math.PI / 90;
-                arm.extend();
+                SegmentedArm.FOREARM_START -= val;
+                returnPos();
             }
 
             if (p2.pressingButton("DD")) {
-                SegmentedArm.FOREARM_START += Math.PI / 90;
+                SegmentedArm.FOREARM_START += val;
                 arm.extend();
             }
         } else {
             if (p2.pressingButton("DU")) {
-                SegmentedArm.UPPER_ARM_START -= Math.PI / 180;
+                SegmentedArm.UPPER_ARM_START -= val;
                 arm.extend();
             }
 
             if (p2.pressingButton("DD")) {
-                SegmentedArm.UPPER_ARM_START += Math.PI / 180;
+                SegmentedArm.UPPER_ARM_START += val;
                 arm.extend();
             }
         }
@@ -92,7 +99,7 @@ public class SecondTeleOp extends OpMode {
         else
             arm.changeCoordinate(-2 * p2.getValue("LX")/3, -2 * p2.getValue("LY")/3);
 
-        if (p1.pressingButton("Y"))
+        if (p1.pressingButton("LS"))
             drive.setAnchorAngle();
 
         // Extra
@@ -124,8 +131,31 @@ public class SecondTeleOp extends OpMode {
             arm.setUpperArm(Math.PI/3);
             arm.waitForArm();
             ThreadUtils.rest(500);
-            arm.setUpperArm(SegmentedArm.EXTENDED_UPPER_ARM);
             arm.extend();
+            arm.setUpperArm(0);
+            toggle = false;
+            intakeProcess();
         }).start();
     }
+
+    private void intakeProcess() {
+        new Thread(() -> {
+            if (toggle) {
+                arm.extend();
+                claw.open();
+                toggle = false;
+            } else {
+                claw.close();
+                ThreadUtils.rest(500);
+                arm.setUpperArm(Math.PI/24);
+                toggle = true;
+            }
+        }).start();
+    }
+
+    private void returnPos() {
+        if (toggle)
+            arm.setUpperArm(Math.PI/24);
+        else
+            arm.extend();}
 }

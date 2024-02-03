@@ -25,9 +25,7 @@ public class BlueLeft extends OpMode {
         drive = new SampleDrive(hardwareMap);
         claw = new SampleClaw(hardwareMap);
         arm = new SegmentedArm(hardwareMap);
-//        cv = new TylerCV(hardwareMap, 1);
-
-        arm.setWrist(3*Math.PI/4);
+        claw.close();
     }
 
     @Override
@@ -38,12 +36,11 @@ public class BlueLeft extends OpMode {
 
     @Override
     public void start() {
-        position = "Middle";
+        position = "Left";
 //        cv.stop();
-        claw.close();
         ThreadUtils.rest();
         arm.initialExtension();
-        ThreadUtils.rest(6000);
+        ThreadUtils.rest(2000);
 
         placePurple();
         placeYellow();
@@ -59,16 +56,16 @@ public class BlueLeft extends OpMode {
     public void placePurple() {
         telemetry.addLine("Starting Purple");
         telemetry.update();
-        arm.setUpperArm(0);
+        arm.setUpperArm(Math.PI/36);
         arm.setForearm(Math.PI);
         arm.setWrist(3*Math.PI/2);
         ThreadUtils.rest(1000);
-        drive.cartesianMove(-30, 60);
+        drive.cartesianMove(-30, 55);
         drive.spinTo(-Math.PI/2);
 
         switch(position) {
             case "Right":
-                drive.cartesianMove(22.5, 15);
+                drive.cartesianMove(25, 15);
                 claw.openRight();
                 ThreadUtils.rest(500);
                 drive.cartesianMove(-50, 0);
@@ -80,9 +77,10 @@ public class BlueLeft extends OpMode {
                 drive.cartesianMove(-25, -45);
                 break;
             case "Left":
-                drive.cartesianMove(-25, 15);
+                drive.cartesianMove(-25, 25);
                 claw.openRight();
                 ThreadUtils.rest(500);
+                drive.cartesianMove(0, -10);
         }
     }
 
@@ -90,28 +88,28 @@ public class BlueLeft extends OpMode {
         telemetry.addLine("Starting Yellow");
         telemetry.update();
 
-        arm.setCoordinate(-25, 15);
+        arm.setCoordinate(-25, 10);
         arm.waitForArm();
         ThreadUtils.rest(500);
-        drive.strafe(-40);
+        drive.strafe(-22);
 
         switch (position) {
             case "Right":
-                drive.drive(10);
+                drive.drive(20);
                 claw.openLeft();
                 ThreadUtils.rest(500);
+                drive.strafe(10);
                 break;
             case "Middle":
+                claw.openLeft();
+                ThreadUtils.rest(500);
+                drive.strafe(10);
+                break;
+            case "Left":
                 drive.drive(-10);
                 claw.openLeft();
                 ThreadUtils.rest(500);
-                drive.drive(20);
-                break;
-            case "Left":
-                drive.drive(-30);
-                claw.openLeft();
-                ThreadUtils.rest(500);
-                drive.drive(40);
+                drive.strafe(10);
         }
     }
 
@@ -119,10 +117,20 @@ public class BlueLeft extends OpMode {
         telemetry.addLine("Park");
         telemetry.update();
         arm.setCoordinate(0, 50);
-        drive.cartesianMove(-10, 70);
+        switch (position) {
+            case "Right":
+                drive.cartesianMove(-10, 70);
+                break;
+            case "Middle":
+                drive.cartesianMove(-10, 90);
+                break;
+            case "Left":
+                drive.cartesianMove(-10, 100);
+        }
+
         arm.rest();
         arm.waitForArm();
-        ThreadUtils.rest(2000);
+        ThreadUtils.rest(4000);
     }
 
     @Override

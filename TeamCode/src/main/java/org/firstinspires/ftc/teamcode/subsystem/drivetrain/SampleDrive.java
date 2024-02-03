@@ -96,7 +96,11 @@ public class SampleDrive implements DrivetrainMecanum {
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (ThreadUtils.isRunThread() && isMoving()) {
-            setPower(MEDIUM_SPEED);
+            setPower(.5);
+//            motorFL.setPower(.5 * Math.abs((xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
+//            motorFR.setPower(.5 * Math.abs((-xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
+//            motorBL.setPower(.5 * Math.abs((-xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
+//            motorBR.setPower(.5 * Math.abs((xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
         }
 
         ThreadUtils.rest();
