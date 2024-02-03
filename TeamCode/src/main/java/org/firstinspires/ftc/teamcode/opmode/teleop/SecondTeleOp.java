@@ -54,38 +54,50 @@ public class SecondTeleOp extends OpMode {
                 intermediateProcess(-30, 35);
             else
                 intermediateProcess(-30, 25);
-        if (p1.pressingButton("B"))
+        if (p1.pressingButton("B") || p2.pressingButton("B"))
             outtakeProcess();
-        if (p1.pressingButton("A"))
+        if (p1.pressingButton("A") || p2.pressingButton("A"))
             claw.toggle();
 
         // Fine tuning
-        if (p1.pressingButton("LB"))
+        if (p1.pressingButton("LB") || p2.pressingButton("LB"))
             claw.toggleLeft();
-        if (p1.pressingButton("RB"))
+        if (p1.pressingButton("RB") || p2.pressingButton("RB"))
             claw.toggleRight();
 
-        if (p2.pressingButton("DU")) {
-            SegmentedArm.UPPER_ARM_START -= Math.PI / 180;
-            arm.extend();
-        }
+        if (p2.pressingButton("RT")) {
+            if (p2.pressingButton("DU")) {
+                SegmentedArm.FOREARM_START -= Math.PI / 90;
+                arm.extend();
+            }
 
-        if (p2.pressingButton("DD")) {
-            SegmentedArm.UPPER_ARM_START += Math.PI/180;
-            arm.extend();
+            if (p2.pressingButton("DD")) {
+                SegmentedArm.FOREARM_START += Math.PI / 90;
+                arm.extend();
+            }
+        } else {
+            if (p2.pressingButton("DU")) {
+                SegmentedArm.UPPER_ARM_START -= Math.PI / 180;
+                arm.extend();
+            }
+
+            if (p2.pressingButton("DD")) {
+                SegmentedArm.UPPER_ARM_START += Math.PI / 180;
+                arm.extend();
+            }
         }
 
         if (drive.getAngle() < 0)
-            arm.changeCoordinate(2*p2.getValue("LX")/3, -2*p2.getValue("LY")/3);
+            arm.changeCoordinate(2 * p2.getValue("LX")/3, -2 * p2.getValue("LY")/3);
         else
-            arm.changeCoordinate(-2*p2.getValue("LX")/3, -2*p2.getValue("LY")/3);
+            arm.changeCoordinate(-2 * p2.getValue("LX")/3, -2 * p2.getValue("LY")/3);
 
         if (p1.pressingButton("Y"))
             drive.setAnchorAngle();
 
         // Extra
         if (p1.pressingButton("DU"))
-            ;// Linear Actuator here
+            ;// Rigging here
         if (p1.pressingButton("DD"))
             launcher.launch();
 
