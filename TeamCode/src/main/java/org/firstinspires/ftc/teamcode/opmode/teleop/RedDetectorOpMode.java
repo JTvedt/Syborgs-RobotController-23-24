@@ -22,6 +22,7 @@ public class RedDetectorOpMode extends LinearOpMode {
     double cY = 0;
     double width = 0;
 
+
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
@@ -29,6 +30,7 @@ public class RedDetectorOpMode extends LinearOpMode {
     // Calculate the distance using the formula
     public static final double objectWidthInRealWorldUnits = 2;  // Replace with the actual width of the object in real-world units
     public static final double focalLength = 728;  // Replace with the focal length of the camera in pixels
+
 
 
     @Override
@@ -76,6 +78,7 @@ public class RedDetectorOpMode extends LinearOpMode {
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
     class redObjectDetection extends OpenCvPipeline {
+        Mat hsvFrame = new Mat();
         @Override
         public Mat processFrame(Mat input) {
 
@@ -88,6 +91,10 @@ public class RedDetectorOpMode extends LinearOpMode {
 
             if (largestContour != null) {
                 // Draw a red outline around the largest detected object
+                for(int i = 0; i < contours.size(); i++){
+                    Imgproc.drawContours(input, contours, i, new Scalar(255, 0, 0), 2);
+                }
+
                 Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(255, 0, 0), 2);
                 // Calculate the width of the bounding box
                 width = calculateWidth(largestContour);
@@ -132,12 +139,12 @@ public class RedDetectorOpMode extends LinearOpMode {
             Mat hsvFrame = new Mat();
             Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
 
-            //Blue
-            Scalar lowerRed = new Scalar(80, 100, 50);
-            Scalar upperRed = new Scalar(160, 255, 255);
+//            //Blue
+//            Scalar lowerRed = new Scalar(80, 100, 50);
+//            Scalar upperRed = new Scalar(160, 255, 255);
 
-//            Scalar lowerRed = new Scalar(100, 100, 10);
-//            Scalar upperRed = new Scalar(180, 255, 255);
+            Scalar lowerRed = new Scalar(100, 100, 100);
+            Scalar upperRed = new Scalar(180, 100, 100);
 
 
             Mat redMask = new Mat();
@@ -153,7 +160,6 @@ public class RedDetectorOpMode extends LinearOpMode {
         private MatOfPoint findLargestContour(List<MatOfPoint> contours) {
             double maxArea = 0;
             MatOfPoint largestContour = null;
-
             for (MatOfPoint contour : contours) {
                 double area = Imgproc.contourArea(contour);
                 if (area > maxArea) {

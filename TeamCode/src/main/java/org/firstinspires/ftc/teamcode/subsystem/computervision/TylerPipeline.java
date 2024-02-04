@@ -29,6 +29,10 @@ public class TylerPipeline extends OpenCvPipeline {
     private boolean flag = false;
     private double width;
 
+    public Scalar lowerColor;
+    public Scalar upperColor;
+
+
     public static final double OBJECT_WIDTH_IN_REAL_WORLD_UNITS = 2;  // Replace with the actual width of the object in real-world units
     public static final double FOCAL_LENGTH = 728;  // Replace with the focal length of the camera in pixels
 
@@ -49,6 +53,10 @@ public class TylerPipeline extends OpenCvPipeline {
 
         if (largestContour != null) {
             // Draw a red outline around the largest detected object
+            for(int i = 0; i < contours.size(); i++){
+                Imgproc.drawContours(input, contours, i, new Scalar(255, 0, 0), 2);
+            }
+
             Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(255, 0, 0), 2);
             // Calculate the width of the bounding box
             width = calculateWidth(largestContour);
@@ -57,7 +65,8 @@ public class TylerPipeline extends OpenCvPipeline {
             String widthLabel = "Width: " + (int) width + " pixels";
             Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 255), 2);
             //Display the Distance
-            String distanceLabel = "Distance: " + String.format("%.2f", getDistance(width)) + " inches";
+
+            String position = "";
 
             if((int) cX > (426)){
                 position = "Right";
@@ -65,7 +74,7 @@ public class TylerPipeline extends OpenCvPipeline {
             else if((int) cX < (213)){
                 position = "Left";
             }
-            else{
+            else if((int) cX > 213 && (int) cX < 426){
                 position = "Middle";
             }
 
@@ -89,12 +98,21 @@ public class TylerPipeline extends OpenCvPipeline {
 
     private Mat preprocessFrame(Mat frame) {
         Mat hsvFrame = new Mat();
-        Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
 
-        Scalar lowerColor;
-        Scalar upperColor;
-        lowerColor = new Scalar(80, 100, 50);
-        upperColor = new Scalar(160, 255, 255);
+//            //Blue
+//            Scalar lowerColor = new Scalar(80, 100, 50);
+//            Scalar upperColor = new Scalar(160, 255, 255);
+
+        if(color == BLUE){
+            lowerColor = new Scalar(100, 100, 10);
+            upperColor = new Scalar(180, 255, 255);
+        }
+        if(color == RED){
+            lowerColor = new Scalar(100, 100, 100);
+            upperColor = new Scalar(180, 255, 255);
+        }
+
 
 
         Mat redMask = new Mat();
@@ -110,7 +128,6 @@ public class TylerPipeline extends OpenCvPipeline {
     private MatOfPoint findLargestContour(List<MatOfPoint> contours) {
         double maxArea = 0;
         MatOfPoint largestContour = null;
-
         for (MatOfPoint contour : contours) {
             double area = Imgproc.contourArea(contour);
             if (area > maxArea) {
@@ -124,10 +141,6 @@ public class TylerPipeline extends OpenCvPipeline {
     private double calculateWidth(MatOfPoint contour) {
         Rect boundingRect = Imgproc.boundingRect(contour);
         return boundingRect.width;
-    }
-    private double getDistance(double width) {
-        double distance = (OBJECT_WIDTH_IN_REAL_WORLD_UNITS * FOCAL_LENGTH) / width;
-        return distance;
     }
     public String getPosition() {
         return position;
