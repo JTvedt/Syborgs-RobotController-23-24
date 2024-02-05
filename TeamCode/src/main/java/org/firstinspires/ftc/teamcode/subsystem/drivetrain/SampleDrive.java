@@ -102,8 +102,6 @@ public class SampleDrive implements DrivetrainMecanum {
 //            motorBL.setPower(.5 * Math.abs((-xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
 //            motorBR.setPower(.5 * Math.abs((xTicks + yTicks) / (Math.abs(xTicks) + Math.abs(yTicks))));
         }
-
-        ThreadUtils.rest();
     }
 
     public boolean isMoving() {

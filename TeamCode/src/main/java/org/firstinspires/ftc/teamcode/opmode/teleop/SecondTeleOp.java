@@ -37,9 +37,9 @@ public class SecondTeleOp extends OpMode {
     @Override
     public void start() {
         claw.open();
-        arm.setForearm(Math.PI);
-        arm.setUpperArm(0);
-        arm.setWrist(3*Math.PI/2);
+        toggle = false;
+        arm.extend();
+        intakeProcess();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SecondTeleOp extends OpMode {
 
         double val = Math.PI/72;
         if (p2.holdingButton("LT"))
-            val = Math.PI/4;
+            val = Math.PI/8;
 
         if (p2.holdingButton("RT")) {
             if (p2.pressingButton("DU")) {

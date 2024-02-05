@@ -66,7 +66,6 @@ public class TylerPipeline extends OpenCvPipeline {
             Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 255), 2);
             //Display the Distance
 
-            String position = "";
 
             if((int) cX > (426)){
                 position = "Right";
