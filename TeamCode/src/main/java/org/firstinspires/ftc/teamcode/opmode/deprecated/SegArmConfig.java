@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop.config;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.SegmentedArm;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
-@TeleOp(name="Config Seg Arm")
+@Deprecated
 public class SegArmConfig extends OpMode {
     private SegmentedArm arm;
     private Controller controller;
