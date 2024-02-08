@@ -1,0 +1,47 @@
+package org.firstinspires.ftc.teamcode.subsystem.drivetrain;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.util.PIDController;
+import org.firstinspires.ftc.teamcode.util.ThreadUtils;
+import org.firstinspires.ftc.teamcode.util.math.Vector;
+
+public class OdoDrive extends SampleDrive {
+    public OdoDrive(HardwareMap hardwareMap) {
+        super(hardwareMap);
+    }
+
+    public Vector getCoord() {
+        return new Vector(0, 0);
+    }
+
+    public void moveToPosition(Vector targetPos, double angle) {
+        PIDController positionPID = new PIDController(0, 0, 0, distanceTo(targetPos));
+        PIDController anglePID = new PIDController(0, 0, 0, distanceToAngle(angle));
+
+        while (distanceTo(targetPos) > .3
+                && Math.abs(distanceToAngle(angle)) > Math.PI/180
+                && ThreadUtils.isRunThread()) {
+            positionPID.update(distanceTo(targetPos));
+            anglePID.update(distanceToAngle(angle));
+
+            double turn = anglePID.getOutput();
+            double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
+
+            Vector targetVector = targetPos.subtract(getCoord());
+            targetVector.multiply(1/targetVector.hypot());
+            targetVector.multiply(drivePower);
+
+            motorFL.setPower(targetVector.getX() + targetVector.getY() + turn);
+            motorFR.setPower(-targetVector.getX() + targetVector.getY() - turn);
+            motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
+            motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
+        }
+    }
+
+    public double distanceTo(Vector target) {
+        Vector curPos = getCoord();
+        return Math.hypot(target.getX() - curPos.getX(), target.getY() - curPos.getY());
+    }
+}

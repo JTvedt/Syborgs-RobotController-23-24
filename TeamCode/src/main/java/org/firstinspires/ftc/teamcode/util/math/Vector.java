@@ -31,7 +31,23 @@ public class Vector {
         return this;
     }
 
+    public Vector add(Vector other) {
+        this.x += other.x;
+        this.y += other.y;
+        return this;
+    }
+
+    public Vector subtract(Vector other) {
+        this.x -= other.x;
+        this.y -= other.y;
+        return this;
+    }
+
     public Vector multiply(double magnitude) {
         return this.stretch(magnitude, magnitude);
+    }
+
+    public double hypot() {
+        return Math.hypot(x, y);
     }
 }
