@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.opmode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.subsystem.drivetrain.SampleDrive;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
 
-@Autonomous(name="Auton Red-R")
-public class RedRight extends OpMode {
+@Deprecated
+public class BlueLeft extends OpMode {
     SampleDrive drive;
     SampleClaw claw;
     SegmentedArm arm;
@@ -25,7 +25,7 @@ public class RedRight extends OpMode {
         drive = new SampleDrive(hardwareMap);
         claw = new SampleClaw(hardwareMap);
         arm = new SegmentedArm(hardwareMap);
-        cv = new TylerCV(hardwareMap, 2);
+        cv = new TylerCV(hardwareMap, 1);
         claw.close();
     }
 
@@ -65,25 +65,24 @@ public class RedRight extends OpMode {
         arm.setForearm(Math.PI);
         arm.setWrist(3*Math.PI/2);
         ThreadUtils.rest(1000);
-        drive.strafe(15);
-        drive.cartesianMove(35, 60);
-        drive.spinTo(Math.PI/2);
+        drive.cartesianMove(-35, 60);
+        drive.spinTo(-Math.PI/2);
 
         switch(position) {
-            case "Left":
-                drive.cartesianMove(-25, 45);
+            case "Right":
+                drive.cartesianMove(25, 45);
                 claw.openRight();
                 ThreadUtils.rest(500);
-                drive.cartesianMove(50, -30);
+                drive.cartesianMove(-50, -30);
                 break;
             case "Middle":
                 drive.cartesianMove(0, 60);
                 claw.openRight();
                 ThreadUtils.rest(500);
-                drive.cartesianMove(25, -45);
+                drive.cartesianMove(-25, -45);
                 break;
-            case "Right":
-                drive.cartesianMove(25, 45);
+            case "Left":
+                drive.cartesianMove(-25, 45);
                 claw.openRight();
                 ThreadUtils.rest(500);
                 drive.cartesianMove(0, -30);
@@ -97,21 +96,21 @@ public class RedRight extends OpMode {
         arm.setCoordinate(-25, 15);
         arm.waitForArm();
         ThreadUtils.rest(500);
-        drive.strafe(22);
+        drive.strafe(-22);
 
         switch (position) {
-            case "Left":
+            case "Right":
                 drive.drive(20);
                 break;
             case "Middle":
                 break;
-            case "Right":
+            case "Left":
                 drive.drive(-20);
         }
 
         claw.openLeft();
         ThreadUtils.rest(500);
-        drive.strafe(-10);
+        drive.strafe(10);
     }
 
     public void park() {
@@ -120,13 +119,13 @@ public class RedRight extends OpMode {
         arm.setCoordinate(0, 50);
         switch (position) {
             case "Right":
-                drive.cartesianMove(10, 70);
+                drive.cartesianMove(-10, 70);
                 break;
             case "Middle":
-                drive.cartesianMove(10, 90);
+                drive.cartesianMove(-10, 90);
                 break;
             case "Left":
-                drive.cartesianMove(10, 100);
+                drive.cartesianMove(-10, 100);
         }
 
         arm.rest();
