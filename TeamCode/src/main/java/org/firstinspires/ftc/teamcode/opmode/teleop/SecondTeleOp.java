@@ -100,7 +100,7 @@ public class SecondTeleOp extends OpMode {
             arm.changeCoordinate(-2 * p2.getValue("LX")/3, -2 * p2.getValue("LY")/3);
 
         if (p1.pressingButton("LS"))
-            drive.setAnchorAngle();
+            drive.resetAngle();
 
         // Extra
         if (p1.pressingButton("DU"))

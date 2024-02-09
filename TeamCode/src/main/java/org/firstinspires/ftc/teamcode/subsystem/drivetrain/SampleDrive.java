@@ -212,7 +212,7 @@ public class SampleDrive implements DrivetrainMecanum {
                 imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - anchorAngle);
     }
 
-    public void setAnchorAngle() {
+    public void resetAngle() {
         anchorAngle = getAngle() + anchorAngle;
     }
 

@@ -8,6 +8,9 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
 
 public class OdoDrive extends SampleDrive {
+    Vector targetPos = new Vector(0, 0);
+    double targetAngle = 0;
+
     public OdoDrive(HardwareMap hardwareMap) {
         super(hardwareMap);
     }
@@ -17,6 +20,9 @@ public class OdoDrive extends SampleDrive {
     }
 
     public void moveToPosition(Vector targetPos, double angle) {
+        this.targetPos = targetPos;
+        this.targetAngle = angle;
+
         PIDController positionPID = new PIDController(0, 0, 0, distanceTo(targetPos));
         PIDController anglePID = new PIDController(0, 0, 0, distanceToAngle(angle));
 
@@ -38,6 +44,23 @@ public class OdoDrive extends SampleDrive {
             motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
             motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
         }
+    }
+
+    public void moveToPosition(double x, double y, double angle) {
+        moveToPosition(new Vector(x, y), angle);
+    }
+
+    public void moveToCoord(Vector targetPos) {
+        moveToPosition(targetPos, targetAngle);
+    }
+
+    public void moveToCoord(double x, double y) {
+        moveToPosition(x, y, targetAngle);
+    }
+
+    @Override
+    public void spinTo(double rad) {
+        moveToPosition(targetPos, rad);
     }
 
     public double distanceTo(Vector target) {
