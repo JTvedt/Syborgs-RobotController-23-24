@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
 
 public class OdoDrive extends SampleDrive {
-    Vector targetPos = new Vector(0, 0);
-    double targetAngle = 0;
+    private Vector targetPos = new Vector(0, 0);
+    private double targetAngle = 0;
+    private Odometry odometry;
 
     public OdoDrive(HardwareMap hardwareMap) {
-        super(hardwareMap);
+        super(hardwareMap, false);
 
         new Thread(this::updatePosition).start();
     }
@@ -48,8 +49,12 @@ public class OdoDrive extends SampleDrive {
     }
 
     public Vector getCoord() {
-        // TODO fill in with Odometry functions
-        return new Vector(0, 0);
+        return new Vector(odometry.getX(), odometry.getY());
+    }
+
+    @Override
+    public double getAngle() {
+        return odometry.getAngle();
     }
 
     public void moveToPosition(Vector targetPos, double angle) {

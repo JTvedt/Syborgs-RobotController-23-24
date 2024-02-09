@@ -40,6 +40,10 @@ public class SampleDrive implements DrivetrainMecanum {
     private boolean autosteer = false;
 
     public SampleDrive(HardwareMap hardwareMap) {
+        this(hardwareMap, true);
+    }
+
+    public SampleDrive(HardwareMap hardwareMap, boolean useImu) {
         motorFL = hardwareMap.get(DcMotor.class, "FL");
         motorFR = hardwareMap.get(DcMotor.class, "FR");
         motorBL = hardwareMap.get(DcMotor.class, "BL");
@@ -56,14 +60,16 @@ public class SampleDrive implements DrivetrainMecanum {
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
+        if (useImu) {
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.mode = BNO055IMU.SensorMode.IMU;
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.loggingEnabled = false;
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            imu.initialize(parameters);
+        }
     }
 
     protected void setRunMode(DcMotor.RunMode mode) {
