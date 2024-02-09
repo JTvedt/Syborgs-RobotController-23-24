@@ -13,24 +13,17 @@ public class OdoDrive extends SampleDrive {
 
     public OdoDrive(HardwareMap hardwareMap) {
         super(hardwareMap);
+
+        new Thread(this::updatePosition).start();
     }
 
-    public Vector getCoord() {
-        return new Vector(0, 0);
-    }
-
-    public void moveToPosition(Vector targetPos, double angle) {
-        this.targetPos = targetPos;
-        this.targetAngle = angle;
-
+    public void updatePosition() {
         PIDController positionPID = new PIDController(0, 0, 0, distanceTo(targetPos));
-        PIDController anglePID = new PIDController(0, 0, 0, distanceToAngle(angle));
+        PIDController anglePID = new PIDController(0, 0, 0, distanceToAngle(targetAngle));
 
-        while (distanceTo(targetPos) > .3
-                && Math.abs(distanceToAngle(angle)) > Math.PI/180
-                && ThreadUtils.isRunThread()) {
+        while (ThreadUtils.isRunThread()) {
             positionPID.update(distanceTo(targetPos));
-            anglePID.update(distanceToAngle(angle));
+            anglePID.update(distanceToAngle(targetAngle));
 
             double turn = anglePID.getOutput();
             double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
@@ -44,6 +37,24 @@ public class OdoDrive extends SampleDrive {
             motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
             motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
         }
+    }
+
+    public void waitForDrive() {
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < 3 && ThreadUtils.isRunThread())
+            if (distanceTo(targetPos) > .3 || Math.abs(distanceToAngle(targetAngle)) > Math.PI/180)
+                timer.reset();
+    }
+
+    public Vector getCoord() {
+        // TODO fill in with Odometry functions
+        return new Vector(0, 0);
+    }
+
+    public void moveToPosition(Vector targetPos, double angle) {
+        this.targetPos = targetPos;
+        targetAngle = angle;
     }
 
     public void moveToPosition(double x, double y, double angle) {

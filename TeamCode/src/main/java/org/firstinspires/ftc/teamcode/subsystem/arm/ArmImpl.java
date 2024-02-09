@@ -15,19 +15,10 @@ public class ArmImpl implements Arm {
     public static final int HIGH_BACKBOARD = 400;
 
     public ArmImpl(HardwareMap hardwareMap) {
-        this(hardwareMap, true);
-    }
-
-    public ArmImpl(HardwareMap hardwareMap, boolean reset) {
         armMotor = hardwareMap.get(DcMotor.class, "RA");
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if (reset) {
-            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            setPosition(0);
-        }
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setPosition(int position) {

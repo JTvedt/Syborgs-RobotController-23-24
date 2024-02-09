@@ -38,11 +38,7 @@ public class SegmentedArm extends ArmImpl {
     public boolean tempFlag = false;
 
     public SegmentedArm(HardwareMap hardwareMap) {
-        this(hardwareMap, true);
-    }
-
-    public SegmentedArm(HardwareMap hardwareMap, boolean reset) {
-        super(hardwareMap, reset);
+        super(hardwareMap);
 
         forearmMotor = hardwareMap.get(DcMotor.class, "FA");
         forearmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
