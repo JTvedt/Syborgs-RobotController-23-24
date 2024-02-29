@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 @TeleOp(name="Config Claw Sample")
 public class SampleClawConfig extends OpMode {
     SampleClaw claw;
-    SegmentedArm arm;
     Controller controller;
 
     private double leftPos = 0.5;
@@ -21,9 +20,6 @@ public class SampleClawConfig extends OpMode {
     public void init() {
         controller = new Controller(gamepad1);
         claw = new SampleClaw(hardwareMap);
-        arm = new SegmentedArm(hardwareMap);
-
-        arm.initialExtension();
     }
 
     @Override

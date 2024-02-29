@@ -10,22 +10,20 @@ import org.firstinspires.ftc.teamcode.util.math.Vector;
 public class OdoDrive extends SampleDrive {
     private Vector targetPos = new Vector(0, 0);
     private double targetAngle = 0;
-    private Odometry odometry;
+    private final Odometry odometry;
 
     public OdoDrive(HardwareMap hardwareMap) {
         super(hardwareMap, false);
+        odometry = new OdoImpl(hardwareMap);
 
         new Thread(this::updatePosition).start();
     }
 
     public void updatePosition() {
-        PIDController positionPID = new PIDController(0, 0, 0, distanceTo(targetPos));
-        PIDController anglePID = new PIDController(0, 0, 0, distanceToAngle(targetAngle));
+        PIDController positionPID = new PIDController(0, 0, 0, () -> distanceTo(targetPos));
+        PIDController anglePID = new PIDController(0, 0, 0, () -> distanceToAngle(targetAngle));
 
         while (ThreadUtils.isRunThread()) {
-            positionPID.update(distanceTo(targetPos));
-            anglePID.update(distanceToAngle(targetAngle));
-
             double turn = anglePID.getOutput();
             double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
 

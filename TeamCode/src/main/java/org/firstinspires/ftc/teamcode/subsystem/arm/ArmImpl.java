@@ -15,7 +15,7 @@ public class ArmImpl implements Arm {
     public static final int HIGH_BACKBOARD = 400;
 
     public ArmImpl(HardwareMap hardwareMap) {
-        armMotor = hardwareMap.get(DcMotor.class, "RA");
+        armMotor = hardwareMap.get(DcMotor.class, "Turn");
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

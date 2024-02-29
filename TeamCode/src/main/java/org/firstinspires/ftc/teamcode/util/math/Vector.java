@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.util.math;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.NonNull;
+
 public class Vector {
     private double x;
     private double y;
@@ -49,5 +53,11 @@ public class Vector {
 
     public double hypot() {
         return Math.hypot(x, y);
+    }
+
+    @SuppressLint("DefaultLocale")
+    @NonNull
+    public String toString() {
+        return String.format("X: %.2f, Y: %.2f", x, y);
     }
 }
