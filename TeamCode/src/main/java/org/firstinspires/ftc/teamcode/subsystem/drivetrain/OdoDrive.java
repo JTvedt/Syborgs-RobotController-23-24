@@ -11,9 +11,10 @@ public class OdoDrive extends SampleDrive {
     private Vector targetPos = new Vector(0, 0);
     private double targetAngle = 0;
     private final Odometry odometry;
+    private boolean isTarget = false;
 
     public OdoDrive(HardwareMap hardwareMap) {
-        super(hardwareMap, false);
+        super(hardwareMap, true);
         odometry = new OdoImpl(hardwareMap);
 
         new Thread(this::updatePosition).start();
@@ -24,17 +25,19 @@ public class OdoDrive extends SampleDrive {
         PIDController anglePID = new PIDController(0, 0, 0, () -> distanceToAngle(targetAngle));
 
         while (ThreadUtils.isRunThread()) {
-            double turn = anglePID.getOutput();
-            double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
+            if (isTarget) {
+                double turn = anglePID.getOutput();
+                double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
 
-            Vector targetVector = targetPos.subtract(getCoord());
-            targetVector.multiply(1/targetVector.hypot());
-            targetVector.multiply(drivePower);
+                Vector targetVector = targetPos.subtract(getCoord());
+                targetVector.multiply(1 / targetVector.hypot());
+                targetVector.multiply(drivePower);
 
-            motorFL.setPower(targetVector.getX() + targetVector.getY() + turn);
-            motorFR.setPower(-targetVector.getX() + targetVector.getY() - turn);
-            motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
-            motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
+                motorFL.setPower(targetVector.getX() + targetVector.getY() + turn);
+                motorFR.setPower(-targetVector.getX() + targetVector.getY() - turn);
+                motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
+                motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
+            }
         }
     }
 
@@ -52,7 +55,8 @@ public class OdoDrive extends SampleDrive {
 
     @Override
     public double getAngle() {
-        return odometry.getAngle();
+//        return odometry.getAngle();
+        return super.getAngle();
     }
 
     public void moveToPosition(Vector targetPos, double angle) {

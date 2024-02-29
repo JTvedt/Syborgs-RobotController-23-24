@@ -29,7 +29,7 @@ public class RegTeleOp extends BaseOpMode {
     @Override
     public void loop() {
         // Drivetrain
-        drive.teleDrive(gamepad1);
+        drive.teleDrive(gamepad1, p1.holdingButton("RT") ? .3 : .9);
 
         if (p1.pressingButton("LS"))
             drive.resetAngle();
@@ -89,6 +89,8 @@ public class RegTeleOp extends BaseOpMode {
     }
 
     public void intermediateProcess(double length) {
-
+        arm.setArm(ActuatorArm.ARM_MAX);
+        arm.setWrist(Math.PI/2);
+        arm.setExtension(length);
     }
 }

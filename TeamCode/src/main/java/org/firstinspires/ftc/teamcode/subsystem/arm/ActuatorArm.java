@@ -10,9 +10,10 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 public class ActuatorArm extends ArmImpl {
     public static final double ARM_START = -Math.PI/5;
-    public static final double WRIST_START = -3*Math.PI/4 + Math.PI/18;
+    public static final double WRIST_START = -3*Math.PI/4;
 
-    public static final double ARM_BASE = -Math.PI/14;
+    public static final double ARM_BASE = -Math.PI/16;
+    public static final double ARM_MAX = 11*Math.PI/18;
     public static final double WRIST_BASE = -Math.PI/2 - ARM_BASE;
 
     public static final double TICKS_PER_REVOLUTION = 5500;
@@ -52,7 +53,7 @@ public class ActuatorArm extends ArmImpl {
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         actuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        PIDController armPID = new PIDController(.005, .0008, 0, () -> getTargetPosition() - getCurrentPosition());
+        PIDController armPID = new PIDController(.0025, .0008, 0, () -> getTargetPosition() - getCurrentPosition());
         PIDController actuatorPID = new PIDController(.004, 0, 0, () -> extensionTarget - actuator.getCurrentPosition());
 
         while (ThreadUtils.isRunThread()) {
@@ -93,8 +94,8 @@ public class ActuatorArm extends ArmImpl {
     }
 
     public void setArm(double angle) {
-        if (angle > 2*Math.PI/3)
-            angle = 2*Math.PI/3;
+        if (angle > ARM_MAX)
+            angle = ARM_MAX;
 
         setPosition((int)(TICKS_PER_REVOLUTION * (angle - ARM_START)/(2*Math.PI)));
     }
