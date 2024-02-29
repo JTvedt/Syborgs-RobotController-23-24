@@ -10,8 +10,9 @@ import org.firstinspires.ftc.teamcode.util.math.Vector;
 public class OdoDrive extends SampleDrive {
     private Vector targetPos = new Vector(0, 0);
     private double targetAngle = 0;
-    private final Odometry odometry;
     private boolean isTarget = false;
+    public final Odometry odometry;
+
 
     public OdoDrive(HardwareMap hardwareMap) {
         super(hardwareMap, true);
