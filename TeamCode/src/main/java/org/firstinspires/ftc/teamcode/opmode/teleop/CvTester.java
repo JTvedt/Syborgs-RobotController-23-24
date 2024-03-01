@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.teleop;
+
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,21 +18,19 @@ import java.util.List;
 
 @TeleOp(name = "OpenCV Testing")
 
-public class RedDetectorOpMode extends LinearOpMode {
+public class CvTester extends LinearOpMode {
 
     double cX = 0;
     double cY = 0;
     double width = 0;
 
-
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
+    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
 
     // Calculate the distance using the formula
-    public static final double objectWidthInRealWorldUnits = 2;  // Replace with the actual width of the object in real-world units
+    public static final double objectWidthInRealWorldUnits = 3.75;  // Replace with the actual width of the object in real-world units
     public static final double focalLength = 728;  // Replace with the focal length of the camera in pixels
-
 
 
     @Override
@@ -43,15 +43,6 @@ public class RedDetectorOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
-            if((int) cX > ((CAMERA_WIDTH/3) * 2)){
-                telemetry.addData("Position","Right");
-            }
-            if((int) cX < ((CAMERA_WIDTH/3))){
-                telemetry.addData("Position","Left");
-            }
-            else{
-                telemetry.addData("Position","Middle");
-            }
             telemetry.addData("Distance in Inch", (getDistance(width)));
             telemetry.update();
 
@@ -72,54 +63,38 @@ public class RedDetectorOpMode extends LinearOpMode {
         controlHubCam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        controlHubCam.setPipeline(new redObjectDetection());
+        controlHubCam.setPipeline(new YellowBlobDetectionPipeline());
 
         controlHubCam.openCameraDevice();
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
-    class redObjectDetection extends OpenCvPipeline {
-        Mat hsvFrame = new Mat();
+    class YellowBlobDetectionPipeline extends OpenCvPipeline {
         @Override
         public Mat processFrame(Mat input) {
+            // Preprocess the frame to detect yellow regions
+            Mat yellowMask = preprocessFrame(input);
 
-            // Find contours of the detected red regions
+            // Find contours of the detected yellow regions
             List<MatOfPoint> contours = new ArrayList<>();
-            Imgproc.findContours(preprocessFrame(input), contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+            Mat hierarchy = new Mat();
+            Imgproc.findContours(yellowMask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-            // Find the largest red contour (blob)
+            // Find the largest yellow contour (blob)
             MatOfPoint largestContour = findLargestContour(contours);
 
             if (largestContour != null) {
                 // Draw a red outline around the largest detected object
-                for(int i = 0; i < contours.size(); i++){
-                    Imgproc.drawContours(input, contours, i, new Scalar(255, 0, 0), 2);
-                }
-
                 Imgproc.drawContours(input, contours, contours.indexOf(largestContour), new Scalar(255, 0, 0), 2);
                 // Calculate the width of the bounding box
                 width = calculateWidth(largestContour);
 
                 // Display the width next to the label
                 String widthLabel = "Width: " + (int) width + " pixels";
-                Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 0, 255), 2);
+                Imgproc.putText(input, widthLabel, new Point(cX + 10, cY + 20), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
+
                 //Display the Distance
                 String distanceLabel = "Distance: " + String.format("%.2f", getDistance(width)) + " inches";
-
-                String position = "";
-
-                if((int) cX > (426)){
-                    position = "Right";
-                }
-                else if((int) cX < (213)){
-                    position = "Left";
-                }
-                else if((int) cX > 213 && (int) cX < 426){
-                    position = "Middle";
-                }
-
-                Imgproc.putText(input, position, new Point(cX + 10, cY + 60), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
-
-
+                Imgproc.putText(input, distanceLabel, new Point(cX + 10, cY + 60), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
                 // Calculate the centroid of the largest contour
                 Moments moments = Imgproc.moments(largestContour);
                 cX = moments.get_m10() / moments.get_m00();
@@ -137,29 +112,26 @@ public class RedDetectorOpMode extends LinearOpMode {
 
         private Mat preprocessFrame(Mat frame) {
             Mat hsvFrame = new Mat();
-            Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_RGB2HSV);
+            Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-//            //Blue
-//            Scalar lowerRed = new Scalar(80, 100, 50);
-//            Scalar upperRed = new Scalar(160, 255, 255);
-
-            Scalar lowerRed = new Scalar(100, 100, 100);
-            Scalar upperRed = new Scalar(180, 100, 100);
+            Scalar lowerYellow = new Scalar(100, 100, 100);
+            Scalar upperYellow = new Scalar(180, 255, 255);
 
 
-            Mat redMask = new Mat();
-            Core.inRange(hsvFrame, lowerRed, upperRed, redMask);
+            Mat yellowMask = new Mat();
+            Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
 
             Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
-            Imgproc.morphologyEx(redMask, redMask, Imgproc.MORPH_OPEN, kernel);
-            Imgproc.morphologyEx(redMask, redMask, Imgproc.MORPH_CLOSE, kernel);
+            Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_OPEN, kernel);
+            Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_CLOSE, kernel);
 
-            return redMask;
+            return yellowMask;
         }
 
         private MatOfPoint findLargestContour(List<MatOfPoint> contours) {
             double maxArea = 0;
             MatOfPoint largestContour = null;
+
             for (MatOfPoint contour : contours) {
                 double area = Imgproc.contourArea(contour);
                 if (area > maxArea) {

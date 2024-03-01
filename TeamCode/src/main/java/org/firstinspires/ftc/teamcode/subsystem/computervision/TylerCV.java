@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode.subsystem.computervision;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.opmode.teleop.RedDetectorOpMode;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 public class TylerCV {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-
+    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
     private OpenCvCamera camera;
     private TylerPipeline pipeline;
 
