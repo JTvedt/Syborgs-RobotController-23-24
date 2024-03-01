@@ -91,4 +91,19 @@ public class OdoImpl implements Odometry {
     public double getAngle() {
         return h;
     }
+
+    @Override
+    public DcMotor getEL() {
+        return EL;
+    }
+
+    @Override
+    public DcMotor getER() {
+        return ER;
+    }
+
+    @Override
+    public DcMotor getEB() {
+        return EB;
+    }
 }

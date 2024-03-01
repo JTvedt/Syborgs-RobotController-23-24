@@ -64,6 +64,10 @@ public class RegTeleOp extends BaseOpMode {
         // Telemetry
         telemetry.addData("Drive Pos", drive.getCoord().toString());
         telemetry.addData("Heading", MathUtils.round(drive.odometry.getAngle(), 2));
+
+        telemetry.addData("EL", drive.odometry.getEL().getCurrentPosition());
+        telemetry.addData("ER", drive.odometry.getER().getCurrentPosition());
+        telemetry.addData("EB", drive.odometry.getEB().getCurrentPosition());
         telemetry.update();
     }
 
