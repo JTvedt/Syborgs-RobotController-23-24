@@ -68,7 +68,7 @@ public class OdoImpl implements Odometry {
 
         //Actual travel distance for each encoder accounting for change in x,y, and theta
         double dtheta = cm_per_tick * ((DER - DEL) / L);
-        double dx = cm_per_tick * (DEB - (DER - DEL) * B / L);
+        double dx = cm_per_tick * DEB - dtheta * B;
         double dy = cm_per_tick * ((DEL + DER) / 2.0);
 
         //update the theta so that it has the correct dtheta angle going into the change
