@@ -76,9 +76,9 @@ public class Controller {
         }
 
         for (String button : buttonFunctions.keySet()) {
-            if ((buttonState(button, ButtonState.RELEASE) || buttonState(button, ButtonState.LIFT)) && holdingButton(button))
+            if ((buttonState(button, ButtonState.RELEASE) || buttonState(button, ButtonState.LIFT)) && checkButton(button))
                 buttonData.put(button, ButtonState.PRESS);
-            else if ((buttonState(button, ButtonState.PRESS) || buttonState(button, ButtonState.HOLD)) && !holdingButton(button))
+            else if ((buttonState(button, ButtonState.PRESS) || buttonState(button, ButtonState.HOLD)) && !checkButton(button))
                 buttonData.put(button, ButtonState.RELEASE);
 
             if (debug != null) {
@@ -91,8 +91,12 @@ public class Controller {
         }
     }
 
-    public boolean holdingButton(String button) {
+    public boolean checkButton(String button) {
         return buttonFunctions.get(button).test(gamepad);
+    }
+
+    public boolean holdingButton(String button) {
+        return buttonState(button, ButtonState.PRESS) || buttonState(button, ButtonState.HOLD);
     }
 
     public boolean buttonState(String button, ButtonState state) {

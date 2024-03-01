@@ -13,6 +13,12 @@ public class OdoDrive extends SampleDrive {
     private boolean isTarget = false;
     public final Odometry odometry;
 
+    @Override
+    public void teleDrive(double lStickX, double lStickY, double rStickX, double power) {
+        if (lStickX != 0 || lStickY != 0 || rStickX != 0)
+            isTarget = false;
+        super.teleDrive(lStickX, lStickY, rStickX, power);
+    }
 
     public OdoDrive(HardwareMap hardwareMap) {
         super(hardwareMap, true);
@@ -56,13 +62,13 @@ public class OdoDrive extends SampleDrive {
 
     @Override
     public double getAngle() {
-//        return odometry.getAngle();
         return super.getAngle();
     }
 
     public void moveToPosition(Vector targetPos, double angle) {
         this.targetPos = targetPos;
         targetAngle = angle;
+        isTarget = true;
     }
 
     public void moveToPosition(double x, double y, double angle) {

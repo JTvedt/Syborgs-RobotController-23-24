@@ -23,6 +23,8 @@ public class DrivetrainConfig extends OpMode {
     private DcMotor bl;
     private DcMotor br;
 
+    private int counter = 0;
+
     @Override
     public void init() {
         drivetrain = new ExposedDrive(hardwareMap);
@@ -47,7 +49,10 @@ public class DrivetrainConfig extends OpMode {
 
     @Override
     public void loop() {
-        drivetrain.setPower(0);
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
 
         if (controller.holdingButton("X"))
             fl.setPower(1);
@@ -69,6 +74,12 @@ public class DrivetrainConfig extends OpMode {
             testEncoder(bl);
         if (controller.pressingButton("DR"))
             testEncoder(br);
+
+        if (!controller.holdingButton("B"))
+            counter++;
+
+        telemetry.addData("B", counter);
+        telemetry.update();
     }
 
     private void testEncoder(DcMotor motor) {

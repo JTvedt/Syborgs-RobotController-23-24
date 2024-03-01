@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @TeleOp(name="TeleOp Regionals")
 public class RegTeleOp extends BaseOpMode {
+    private int extension = -1;
+
     @Override
     public void init() {
         super.init();
@@ -42,12 +44,7 @@ public class RegTeleOp extends BaseOpMode {
         if (p1.pressingButton("B"))
             new Thread(this::outtakeProcess).start();
         if (p1.pressingButton("X"))
-            if (p1.holdingButton("RT") && p1.holdingButton("LT"))
-                new Thread(() -> intermediateProcess(8)).start();
-            else if (p1.holdingButton("RT"))
-                new Thread(() -> intermediateProcess(4)).start();
-            else
-                new Thread(() -> intermediateProcess(0)).start();
+            new Thread(this::intermediateProcess).start();
 
         // Arm
 
@@ -66,7 +63,7 @@ public class RegTeleOp extends BaseOpMode {
 
         // Telemetry
         telemetry.addData("Drive Pos", drive.getCoord().toString());
-        telemetry.addData("Angle", MathUtils.round(drive.odometry.getAngle(), 2));
+        telemetry.addData("Heading", MathUtils.round(drive.odometry.getAngle(), 2));
         telemetry.update();
     }
 
@@ -77,20 +74,30 @@ public class RegTeleOp extends BaseOpMode {
 
     public void intakeProcess() {
         claw.close();
-        ThreadUtils.rest(400);
+        ThreadUtils.rest(200);
         arm.setWrist(0);
     }
 
     public void outtakeProcess() {
+        extension = -1;
         claw.open();
-        ThreadUtils.rest(400);
+        ThreadUtils.rest(200);
         arm.basePosition();
         arm.setWrist(0);
     }
 
-    public void intermediateProcess(double length) {
-        arm.setArm(ActuatorArm.ARM_MAX);
-        arm.setWrist(Math.PI/2);
-        arm.setExtension(length);
+    public void intermediateProcess() {
+        if (extension == -1 || extension == 8) {
+            arm.setArm(ActuatorArm.ARM_MAX);
+            arm.setWrist(Math.PI / 2);
+            arm.setExtension(0);
+            extension = 0;
+        } else if (extension == 0) {
+            arm.setExtension(4);
+            extension = 4;
+        } else if (extension == 4) {
+            arm.setExtension(8);
+            extension = 8;
+        }
     }
 }
