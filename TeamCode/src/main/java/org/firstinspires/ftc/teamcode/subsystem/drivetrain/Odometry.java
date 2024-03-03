@@ -6,8 +6,4 @@ public interface Odometry {
     double getX();
     double getY();
     double getAngle();
-
-    DcMotor getEL();
-    DcMotor getER();
-    DcMotor getEB();
 }

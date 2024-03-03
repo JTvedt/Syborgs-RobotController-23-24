@@ -51,6 +51,10 @@ public class Vector {
         return this.stretch(magnitude, magnitude);
     }
 
+    public Vector copy() {
+        return new Vector(this.x, this.y);
+    }
+
     public double hypot() {
         return Math.hypot(x, y);
     }

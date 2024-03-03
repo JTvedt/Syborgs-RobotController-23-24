@@ -6,12 +6,14 @@ import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.subsystem.arm.ActuatorArm;
 import org.firstinspires.ftc.teamcode.subsystem.claw.SampleClaw;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.OdoDrive;
+import org.firstinspires.ftc.teamcode.subsystem.extra.DroneLauncher;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.MathUtils;
 
 @TeleOp(name="TeleOp Regionals")
 public class RegTeleOp extends BaseOpMode {
     private int extension = -1;
+    private boolean riggingFlag = false;
 
     @Override
     public void init() {
@@ -20,6 +22,7 @@ public class RegTeleOp extends BaseOpMode {
         drive = new OdoDrive(hardwareMap);
         arm = new ActuatorArm(hardwareMap);
         claw = new SampleClaw(hardwareMap);
+        launcher = new DroneLauncher(hardwareMap);
     }
 
     @Override
@@ -47,28 +50,53 @@ public class RegTeleOp extends BaseOpMode {
             new Thread(this::intermediateProcess).start();
 
         // Arm
-
+        if (!p1.holdingButton("LT")) {
+            if (p2.pressingButton("DU"))
+                ActuatorArm.ARM_START -= Math.PI / 3 * timer.seconds();
+            if (p2.pressingButton("DD"))
+                ActuatorArm.ARM_START += Math.PI / 3 * timer.seconds();
+        } else {
+            if (p2.pressingButton("DU"))
+                ActuatorArm.EXTENSION_START -= 3 * timer.seconds();
+            if (p2.pressingButton("DD"))
+                ActuatorArm.EXTENSION_START += 3 * timer.seconds();
+        }
 
         // Claw
         if (p1.pressingButton("LB"))
             claw.toggleLeft();
         if (p1.pressingButton("RB"))
             claw.toggleRight();
-        
+
         // Extra
-        if (p1.pressingButton("DU"))
-            ; // Rigging
+        if (p1.pressingButton("DU")) {
+            if (!riggingFlag) {
+                arm.startRigging();
+                riggingFlag = true;
+            } else {
+                arm.finishRigging();
+            }
+        }
+
         if (p1.pressingButton("DD"))
-            ; // Drone Launcher
+            launcher.launch();
 
         // Telemetry
         telemetry.addData("Drive Pos", drive.getCoord().toString());
         telemetry.addData("Heading", MathUtils.round(drive.odometry.getAngle(), 2));
+        telemetry.addData("Real Heading", MathUtils.round(drive.getAngle(), 2));
 
         telemetry.addData("EL", drive.odometry.getEL().getCurrentPosition());
         telemetry.addData("ER", drive.odometry.getER().getCurrentPosition());
         telemetry.addData("EB", drive.odometry.getEB().getCurrentPosition());
+
+        telemetry.addData("dx", drive.odometry.getDx());
+        telemetry.addData("dy", drive.odometry.getDy());
+
+        telemetry.addData("turn", drive.turn);
         telemetry.update();
+
+        timer.reset();
     }
 
     public void startupProcess() {
@@ -83,6 +111,7 @@ public class RegTeleOp extends BaseOpMode {
     }
 
     public void outtakeProcess() {
+        riggingFlag = false;
         extension = -1;
         claw.open();
         ThreadUtils.rest(200);
@@ -91,6 +120,8 @@ public class RegTeleOp extends BaseOpMode {
     }
 
     public void intermediateProcess() {
+        riggingFlag = false;
+
         if (extension == -1 || extension == 8) {
             arm.setArm(ActuatorArm.ARM_MAX);
             arm.setWrist(Math.PI / 2);

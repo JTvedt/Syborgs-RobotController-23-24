@@ -32,12 +32,14 @@ public class SampleDrive implements DrivetrainMecanum {
     private BNO055IMU imu;
     private double anchorAngle = 0;
 
-    private DriveMode driveMode = DriveMode.RELATIVE;
+    private DriveMode driveMode = DriveMode.ABSOLUTE;
 
     private double horizontalMultiplier = 1;
     private double verticalMultiplier = 0.87;
 
     private boolean autosteer = false;
+
+    public double turn;
 
     public SampleDrive(HardwareMap hardwareMap) {
         this(hardwareMap, true);
@@ -53,7 +55,7 @@ public class SampleDrive implements DrivetrainMecanum {
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
@@ -181,7 +183,7 @@ public class SampleDrive implements DrivetrainMecanum {
     }
 
     public void teleDrive(double lStickX, double lStickY, double rStickX, double power) {
-        double turn = rStickX * power;
+        turn = rStickX * power;
 
         if (turn == 0 && autosteer) {
             double targetAngle = Math.round(getAngle() / (Math.PI / 4)) * (Math.PI / 4);

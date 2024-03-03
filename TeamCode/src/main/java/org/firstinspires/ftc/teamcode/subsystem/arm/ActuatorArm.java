@@ -9,11 +9,12 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
 public class ActuatorArm extends ArmImpl {
-    public static final double ARM_START = -Math.PI/5;
+    public static double ARM_START = -Math.PI/5;
+    public static double EXTENSION_START = 0;
     public static final double WRIST_START = -3*Math.PI/4;
 
-    public static final double ARM_BASE = -Math.PI/16;
-    public static final double ARM_MAX = 11*Math.PI/18;
+    public static final double ARM_BASE = -Math.PI/36;
+    public static final double ARM_MAX = 2*Math.PI/3;
     public static final double WRIST_BASE = -Math.PI/2 - ARM_BASE;
 
     public static final double TICKS_PER_REVOLUTION = 5500;
@@ -50,10 +51,10 @@ public class ActuatorArm extends ArmImpl {
     }
 
     public void updateArm() {
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        actuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        actuator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        PIDController armPID = new PIDController(.0025, .0008, 0, () -> getTargetPosition() - getCurrentPosition());
+        PIDController armPID = new PIDController(.0025, 0, 0, () -> getTargetPosition() - getCurrentPosition());
         PIDController actuatorPID = new PIDController(.004, 0, 0, () -> extensionTarget - actuator.getCurrentPosition());
 
         while (ThreadUtils.isRunThread()) {
@@ -82,7 +83,7 @@ public class ActuatorArm extends ArmImpl {
     }
 
     public void setExtension(double length) {
-        extensionTarget = (int)(length * TICKS_PER_CM);
+        extensionTarget = (int)((length - EXTENSION_START) * TICKS_PER_CM);
         resetActuatorPID = true;
 //        actuator.setTargetPosition(extensionTarget);
 //        actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -142,5 +143,21 @@ public class ActuatorArm extends ArmImpl {
     public void rest() {
         setArm(ARM_START);
         setWrist(Math.PI/4);
+    }
+
+    @Override
+    public void waitForArm() {
+        while (Math.abs(getTargetPosition() - getCurrentPosition()) > 20 && Math.abs(extensionTarget - actuator.getCurrentPosition()) > 10 && ThreadUtils.isRunThread()) {
+
+        }
+    }
+
+    public void startRigging() {
+        setArm(Math.PI/2);
+        setExtension(0);
+    }
+
+    public void finishRigging() {
+        setExtension(0);
     }
 }

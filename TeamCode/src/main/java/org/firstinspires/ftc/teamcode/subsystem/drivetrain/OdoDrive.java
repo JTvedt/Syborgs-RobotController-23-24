@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystem.drivetrain;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
@@ -10,8 +11,10 @@ import org.firstinspires.ftc.teamcode.util.math.Vector;
 public class OdoDrive extends SampleDrive {
     private Vector targetPos = new Vector(0, 0);
     private double targetAngle = 0;
+    public double turnOutput;
+    public Vector targetVector;
     private boolean isTarget = false;
-    public final Odometry odometry;
+    public final OdoImpl odometry;
 
     @Override
     public void teleDrive(double lStickX, double lStickY, double rStickX, double power) {
@@ -28,32 +31,48 @@ public class OdoDrive extends SampleDrive {
     }
 
     public void updatePosition() {
-        PIDController positionPID = new PIDController(0, 0, 0, () -> distanceTo(targetPos));
-        PIDController anglePID = new PIDController(0, 0, 0, () -> distanceToAngle(targetAngle));
+        PIDController positionPID = new PIDController(.05, 0, 0, () -> distanceTo(targetPos));
+        PIDController anglePID = new PIDController(.5, 0, 0, () -> distanceToAngle(targetAngle));
 
         while (ThreadUtils.isRunThread()) {
             if (isTarget) {
-                double turn = anglePID.getOutput();
-                double drivePower = Math.max(Math.abs(positionPID.getOutput()), .7);
+                turnOutput = anglePID.getOutput();
 
-                Vector targetVector = targetPos.subtract(getCoord());
+                double drivePower = Math.min(Math.abs(positionPID.getOutput()), .7);
+
+                targetVector = targetPos.copy();
+                targetVector.subtract(this.getCoord());
+                targetVector.rotate(-getAngle());
                 targetVector.multiply(1 / targetVector.hypot());
-                targetVector.multiply(drivePower);
+                targetVector.multiply(Math.abs(drivePower));
 
-                motorFL.setPower(targetVector.getX() + targetVector.getY() + turn);
-                motorFR.setPower(-targetVector.getX() + targetVector.getY() - turn);
-                motorBL.setPower(-targetVector.getX() + targetVector.getY() + turn);
-                motorBR.setPower(targetVector.getX() + targetVector.getY() - turn);
+                motorFL.setPower(targetVector.getX() + targetVector.getY() - turnOutput);
+                motorFR.setPower(-targetVector.getX() + targetVector.getY() + turnOutput);
+                motorBL.setPower(-targetVector.getX() + targetVector.getY() - turnOutput);
+                motorBR.setPower(targetVector.getX() + targetVector.getY() + turnOutput);
+            }
+        }
+    }
+
+    public void waitForDrive(Telemetry telemetry) {
+        ElapsedTime timer = new ElapsedTime();
+
+        while (timer.seconds() < .3 && ThreadUtils.isRunThread()) {
+            if (Math.abs(distanceTo(targetPos)) > 1.5 || Math.abs(distanceToAngle(targetAngle)) > Math.PI / 60)
+                timer.reset();
+
+            if (telemetry != null) {
+                telemetry.addData("Coord", this.getCoord());
+                telemetry.addData("Target Coord", targetPos);
+                telemetry.addData("Heading", getAngle());
+                telemetry.addData("Target Heading", targetAngle);
+                telemetry.update();
             }
         }
     }
 
     public void waitForDrive() {
-        ElapsedTime timer = new ElapsedTime();
-
-        while (timer.seconds() < 3 && ThreadUtils.isRunThread())
-            if (distanceTo(targetPos) > .3 || Math.abs(distanceToAngle(targetAngle)) > Math.PI/180)
-                timer.reset();
+        waitForDrive(null);
     }
 
     public Vector getCoord() {

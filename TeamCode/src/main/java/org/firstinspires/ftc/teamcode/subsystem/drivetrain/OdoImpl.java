@@ -26,6 +26,7 @@ public class OdoImpl implements Odometry {
     //constants for calculating stuff
     final static double L = 16.0; //Distance from EL to ER
     final static double B = 22.776092; //(Update, I do) This is where I'd put the measurement for midpoint of ER & EL IF I HAD ONE
+//    final static double B = 15.875;
     final static double R = 2.4; //Wheel radius in cm
     final static double N = 2000; //Odo ticks per revolution
     final static double cm_per_tick = 2.0 * Math.PI * R / N;
@@ -39,6 +40,9 @@ public class OdoImpl implements Odometry {
     double x = 0.0;
     double y = 0.0;
     double h = 0.0;
+
+    double dx;
+    double dy;
 
     public OdoImpl(HardwareMap hardwareMap) {
         ER = hardwareMap.get(DcMotor.class, "FR");
@@ -60,7 +64,7 @@ public class OdoImpl implements Odometry {
 
         CERP = ER.getCurrentPosition();
         CELP = EL.getCurrentPosition();
-        CEBP = -EB.getCurrentPosition();
+        CEBP = EB.getCurrentPosition();
 
         DEL = CELP - OELP;
         DER = CERP - OERP;
@@ -68,8 +72,8 @@ public class OdoImpl implements Odometry {
 
         //Actual travel distance for each encoder accounting for change in x,y, and theta
         double dtheta = cm_per_tick * ((DER - DEL) / L);
-        double dx = cm_per_tick * (DEB - (DER - DEL) * B / L);
-        double dy = cm_per_tick * ((DEL + DER) / 2.0);
+        dx = cm_per_tick * (DEB - (DER - DEL) * B / L);
+        dy = cm_per_tick * ((DEL + DER) / 2.0);
 
         //update the theta so that it has the correct dtheta angle going into the change
         double theta = h + dtheta; // basically "account for the change in angle grrr"
@@ -92,18 +96,23 @@ public class OdoImpl implements Odometry {
         return h;
     }
 
-    @Override
     public DcMotor getEL() {
         return EL;
     }
 
-    @Override
     public DcMotor getER() {
         return ER;
     }
 
-    @Override
     public DcMotor getEB() {
         return EB;
+    }
+
+    public double getDx() {
+        return dx;
+    }
+
+    public double getDy() {
+        return dy;
     }
 }
