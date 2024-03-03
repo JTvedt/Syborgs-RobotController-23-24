@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystem.computervision.TylerCV;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.OdoDrive;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
-@Autonomous(name="Auton Reg B-L")
-public class RegAutonBL extends BaseOpMode {
+@Autonomous(name="Auton Reg R-L")
+public class RegAutonRL extends BaseOpMode {
     private String position;
 
     @Override
@@ -19,7 +19,7 @@ public class RegAutonBL extends BaseOpMode {
         drive = new OdoDrive(hardwareMap);
         arm = new ActuatorArm(hardwareMap);
         claw = new SampleClaw(hardwareMap);
-        cv = new TylerCV(hardwareMap, 1);
+        cv = new TylerCV(hardwareMap, 2);
 
         claw.close();
     }
@@ -46,31 +46,10 @@ public class RegAutonBL extends BaseOpMode {
         drive.waitForDrive(telemetry);
         claw.openRight();
         ThreadUtils.rest(200);
-        arm.setExtension(0);
-        arm.setArm(ActuatorArm.ARM_MAX);
-        arm.setWrist(Math.PI/2);
-        OdoDrive.MAX_SPEED = 0.4;
-
-        switch (position) {
-            case "Left":
-                drive.moveToPosition(-90, 45, -Math.PI/2);
-                break;
-            case "Middle":
-                drive.moveToPosition(-90, 55, -Math.PI/2);
-                break;
-            case "Right":
-                drive.moveToPosition(-90, 65, -Math.PI/2);
-        }
-
-        drive.waitForDrive(telemetry);
-        arm.waitForArm();
-        claw.openLeft();
-        ThreadUtils.rest(200);
-
-        OdoDrive.MAX_SPEED = 0.7;
-        drive.moveToPosition(-80, 100, 0);
-        drive.waitForDrive();
-        arm.rest();
+        arm.basePosition();
+        arm.setArm(Math.PI/48);
+        drive.moveToPosition(0, 10, Math.PI/2);
+        drive.moveToCoord(240, 0);
     }
 
     @Override

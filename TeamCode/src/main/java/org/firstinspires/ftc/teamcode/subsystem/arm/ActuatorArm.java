@@ -154,10 +154,12 @@ public class ActuatorArm extends ArmImpl {
 
     public void startRigging() {
         setArm(Math.PI/2);
-        setExtension(0);
+        setExtension(8);
     }
 
     public void finishRigging() {
         setExtension(0);
+        ThreadUtils.rest(3000);
+        setArm(Math.PI/4);
     }
 }

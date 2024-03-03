@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystem.arm.ActuatorArm;
 import org.firstinspires.ftc.teamcode.subsystem.claw.SampleClaw;
+import org.firstinspires.ftc.teamcode.subsystem.computervision.TylerCV;
 import org.firstinspires.ftc.teamcode.subsystem.drivetrain.OdoDrive;
 import org.firstinspires.ftc.teamcode.subsystem.extra.DroneLauncher;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
@@ -18,6 +19,7 @@ public class BaseOpMode extends OpMode {
     protected ActuatorArm arm;
     protected SampleClaw claw;
     protected DroneLauncher launcher;
+    protected TylerCV cv;
     protected ElapsedTime timer;
 
     @Override

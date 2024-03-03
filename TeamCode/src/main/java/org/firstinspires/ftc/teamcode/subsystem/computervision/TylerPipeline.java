@@ -19,7 +19,7 @@ public class TylerPipeline extends OpenCvPipeline {
 
     private double pipeline;
     private int color;
-    private String position;
+    private String position = "Left";
     private double cX;
     private double cY;
 

@@ -50,16 +50,22 @@ public class RegTeleOp extends BaseOpMode {
             new Thread(this::intermediateProcess).start();
 
         // Arm
-        if (!p1.holdingButton("LT")) {
-            if (p2.pressingButton("DU"))
-                ActuatorArm.ARM_START -= Math.PI / 3 * timer.seconds();
-            if (p2.pressingButton("DD"))
-                ActuatorArm.ARM_START += Math.PI / 3 * timer.seconds();
-        } else {
-            if (p2.pressingButton("DU"))
-                ActuatorArm.EXTENSION_START -= 3 * timer.seconds();
-            if (p2.pressingButton("DD"))
-                ActuatorArm.EXTENSION_START += 3 * timer.seconds();
+        if (p1.holdingButton("LT")) {
+            if (!p1.holdingButton("RT")) {
+                if (p1.holdingButton("DU")) {
+                    ActuatorArm.ARM_START -= Math.PI / 3 * timer.seconds();
+                    arm.setArm(ActuatorArm.ARM_BASE);
+                }
+                if (p1.holdingButton("DD")) {
+                    ActuatorArm.ARM_START += Math.PI / 3 * timer.seconds();
+                    arm.setArm(ActuatorArm.ARM_BASE);
+                }
+            } else {
+                if (p1.holdingButton("DU"))
+                    ActuatorArm.EXTENSION_START -= 3 * timer.seconds();
+                if (p1.holdingButton("DD"))
+                    ActuatorArm.EXTENSION_START += 3 * timer.seconds();
+            }
         }
 
         // Claw
@@ -69,17 +75,19 @@ public class RegTeleOp extends BaseOpMode {
             claw.toggleRight();
 
         // Extra
-        if (p1.pressingButton("DU")) {
-            if (!riggingFlag) {
-                arm.startRigging();
-                riggingFlag = true;
-            } else {
-                arm.finishRigging();
+        if (!p1.holdingButton("LT")) {
+            if (p1.pressingButton("DU")) {
+                if (!riggingFlag) {
+                    arm.startRigging();
+                    riggingFlag = true;
+                } else {
+                    arm.finishRigging();
+                }
             }
-        }
 
-        if (p1.pressingButton("DD"))
-            launcher.launch();
+            if (p1.pressingButton("DD"))
+                launcher.launch();
+        }
 
         // Telemetry
         telemetry.addData("Drive Pos", drive.getCoord().toString());
@@ -94,6 +102,7 @@ public class RegTeleOp extends BaseOpMode {
         telemetry.addData("dy", drive.odometry.getDy());
 
         telemetry.addData("turn", drive.turn);
+        telemetry.addData("timer", timer.seconds());
         telemetry.update();
 
         timer.reset();

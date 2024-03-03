@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
 
 public class OdoDrive extends SampleDrive {
+    public static double MAX_SPEED = 0.7;
+
     private Vector targetPos = new Vector(0, 0);
     private double targetAngle = 0;
     public double turnOutput;
@@ -31,14 +33,14 @@ public class OdoDrive extends SampleDrive {
     }
 
     public void updatePosition() {
-        PIDController positionPID = new PIDController(.05, 0, 0, () -> distanceTo(targetPos));
+        PIDController positionPID = new PIDController(.025, 0, 0, () -> distanceTo(targetPos));
         PIDController anglePID = new PIDController(.5, 0, 0, () -> distanceToAngle(targetAngle));
 
         while (ThreadUtils.isRunThread()) {
             if (isTarget) {
                 turnOutput = anglePID.getOutput();
 
-                double drivePower = Math.min(Math.abs(positionPID.getOutput()), .7);
+                double drivePower = Math.min(Math.abs(positionPID.getOutput()), MAX_SPEED);
 
                 targetVector = targetPos.copy();
                 targetVector.subtract(this.getCoord());
