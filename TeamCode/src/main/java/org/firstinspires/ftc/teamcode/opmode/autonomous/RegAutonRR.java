@@ -25,7 +25,16 @@ public class RegAutonRR extends BaseOpMode {
     }
 
     @Override
+    public void init_loop() {
+        telemetry.addData("Position", cv.getPosition());
+        telemetry.update();
+    }
+
+    @Override
     public void start() {
+        position = cv.getPosition();
+        cv.stop();
+
         arm.setArm(Math.PI/48);
         ThreadUtils.rest(200);
         arm.setExtension(6);
@@ -53,23 +62,23 @@ public class RegAutonRR extends BaseOpMode {
 
         switch (position) {
             case "Right":
-                drive.moveToPosition(90, 45, Math.PI/2);
+                drive.moveToPosition(95, 45, Math.PI/2);
                 break;
             case "Middle":
-                drive.moveToPosition(90, 55, Math.PI/2);
+                drive.moveToPosition(95, 55, Math.PI/2);
                 break;
             case "Left":
-                drive.moveToPosition(90, 65, Math.PI/2);
+                drive.moveToPosition(95, 65, Math.PI/2);
         }
 
         drive.waitForDrive(telemetry);
-        arm.waitForArm();
+        ThreadUtils.rest(1000);
         claw.openRight();
-        ThreadUtils.rest(200);
+        ThreadUtils.rest(400);
 
         OdoDrive.MAX_SPEED = 0.7;
-        drive.moveToPosition(80, 100, 0);
-        drive.waitForDrive();
+        drive.moveToPosition(90, 120, 0);
+        drive.waitForDrive(telemetry);
         arm.rest();
     }
 

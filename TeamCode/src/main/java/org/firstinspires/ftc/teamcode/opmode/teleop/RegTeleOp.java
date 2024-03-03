@@ -61,10 +61,14 @@ public class RegTeleOp extends BaseOpMode {
                     arm.setArm(ActuatorArm.ARM_BASE);
                 }
             } else {
-                if (p1.holdingButton("DU"))
-                    ActuatorArm.EXTENSION_START -= 3 * timer.seconds();
-                if (p1.holdingButton("DD"))
-                    ActuatorArm.EXTENSION_START += 3 * timer.seconds();
+                if (p1.holdingButton("DU")) {
+                    ActuatorArm.EXTENSION_START -= 6 * timer.seconds();
+                    arm.setExtension(0);
+                }
+                if (p1.holdingButton("DD")) {
+                    ActuatorArm.EXTENSION_START += 6 * timer.seconds();
+                    arm.setExtension(0);
+                }
             }
         }
 

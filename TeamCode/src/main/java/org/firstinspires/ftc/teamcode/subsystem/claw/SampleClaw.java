@@ -15,7 +15,7 @@ public class SampleClaw implements Claw {
     public static final double LEFT_CLOSE_VALUE = 0.35;
     public static final double LEFT_OPEN_VALUE = 0.47;
     public static final double RIGHT_CLOSE_VALUE = 0.8;
-    public static final double RIGHT_OPEN_VALUE = 0.68;
+    public static final double RIGHT_OPEN_VALUE = 0.62;
 
     private boolean open;
 

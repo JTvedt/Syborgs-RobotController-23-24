@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystem.drivetrain;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PIDController;
@@ -33,14 +34,22 @@ public class OdoDrive extends SampleDrive {
     }
 
     public void updatePosition() {
-        PIDController positionPID = new PIDController(.025, 0, 0, () -> distanceTo(targetPos));
+        PIDController positionPID = new PIDController(.05, 0, 0, () -> distanceTo(targetPos));
         PIDController anglePID = new PIDController(.5, 0, 0, () -> distanceToAngle(targetAngle));
 
         while (ThreadUtils.isRunThread()) {
             if (isTarget) {
                 turnOutput = anglePID.getOutput();
 
-                double drivePower = Math.min(Math.abs(positionPID.getOutput()), MAX_SPEED);
+                if (Math.abs(turnOutput) < .05 && Math.abs(distanceToAngle(targetAngle)) < Math.PI/72)
+                    turnOutput *= .05/turnOutput;
+
+                double drivePower = Range.clip(Math.abs(positionPID.getOutput()), 0, MAX_SPEED);
+
+//                if (Math.abs(distanceToAngle(targetAngle)) > Math.PI/90 && Math.abs(turnOutput) < .1)
+//                    turnOutput *= (.1 / turnOutput);
+//                if (Math.abs(distanceTo(targetPos)) > 1.5 && Math.abs(drivePower) < .1)
+//                    drivePower *= (.1 / drivePower);
 
                 targetVector = targetPos.copy();
                 targetVector.subtract(this.getCoord());
@@ -60,7 +69,7 @@ public class OdoDrive extends SampleDrive {
         ElapsedTime timer = new ElapsedTime();
 
         while (timer.seconds() < .3 && ThreadUtils.isRunThread()) {
-            if (Math.abs(distanceTo(targetPos)) > 1.5 || Math.abs(distanceToAngle(targetAngle)) > Math.PI / 60)
+            if (Math.abs(distanceTo(targetPos)) > 2.5 || Math.abs(distanceToAngle(targetAngle)) > Math.PI/45)
                 timer.reset();
 
             if (telemetry != null) {

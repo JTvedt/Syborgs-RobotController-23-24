@@ -25,7 +25,16 @@ public class RegAutonRL extends BaseOpMode {
     }
 
     @Override
+    public void init_loop() {
+        telemetry.addData("Position", cv.getPosition());
+        telemetry.update();
+    }
+
+    @Override
     public void start() {
+        position = cv.getPosition();
+        cv.stop();
+
         arm.setArm(Math.PI/48);
         ThreadUtils.rest(200);
         arm.setExtension(6);
@@ -34,7 +43,7 @@ public class RegAutonRL extends BaseOpMode {
 
         switch(position) {
             case "Left":
-                drive.moveToPosition(-60, 60, -2*Math.PI/5);
+                drive.moveToPosition(-40, 40, -1*Math.PI/5);
                 break;
             case "Middle":
                 drive.moveToPosition(-20, 60, -2*Math.PI/9);

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.firstinspires.ftc.teamcode.util.ThreadUtils;
 
@@ -103,6 +104,8 @@ public class ActuatorArm extends ArmImpl {
 
     @Override
     public void setPosition(int position) {
+        if (position > 2450)
+            position = 2450;
         armTarget = position;
         resetArmPID = true;
 //        armMotor.setTargetPosition(position);
@@ -145,11 +148,21 @@ public class ActuatorArm extends ArmImpl {
         setWrist(Math.PI/4);
     }
 
+    public void waitForArm(Telemetry telemetry) {
+        while ((Math.abs(getTargetPosition() - getCurrentPosition()) > 20 || Math.abs(extensionTarget - actuator.getCurrentPosition()) > 20) && ThreadUtils.isRunThread()) {
+            if (telemetry != null) {
+                telemetry.addData("Arm", getCurrentPosition());
+                telemetry.addData("Target", getTargetPosition());
+                telemetry.addData("Actuator", actuator.getCurrentPosition());
+                telemetry.addData("Target", actuator.getTargetPosition());
+                telemetry.update();
+            }
+        }
+    }
+
     @Override
     public void waitForArm() {
-        while (Math.abs(getTargetPosition() - getCurrentPosition()) > 20 && Math.abs(extensionTarget - actuator.getCurrentPosition()) > 10 && ThreadUtils.isRunThread()) {
-
-        }
+        waitForArm(null);
     }
 
     public void startRigging() {
